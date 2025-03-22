@@ -5,7 +5,7 @@
 * Team Number:  4
 * Team Name:  Abstract Stack Machine
 * Team Members:  Aarti Sabharwal, Sydney Fitzgerald, Maria-Christina Nicolaides
-* GitHub Repository URL:
+* GitHub Repository URL: https://github.com/upenn-embedded/final-project-s25-abstract-stack-machine.git
 * GitHub Pages Website URL: [for final submission]
 
 ## Final Project Proposal
@@ -42,7 +42,6 @@ The inspiration of this project is that we were considering how the piano, and o
 
 *These must be testable! See the Final Project Manual Appendix for details. Refer to the table below; replace these examples with your own.*
 
-
 The device must be able to produce at least 5 different tones and a drum beat.  It must be able to play notes one after another.  It also must be able to display the note currently being played on the screen that is on the glove.
 
 The system shall get the current note being played and print the note out on the screen within 1s.For validation testing:
@@ -53,7 +52,8 @@ The system shall get the current note being played and print the note out on the
 
 **5.1 Definitions, Abbreviations**
 
-Here, you will define any special terms, acronyms, or abbreviations you plan to use for hardware  TODO
+Here, you will define any special terms, acronyms, or abbreviations you plan to use for hardware
+N/A
 
 **5.2 Functionality**
 
@@ -81,7 +81,8 @@ Validation testing:
 
 **6.1 Definitions, Abbreviations**
 
-Here, you will define any special terms, acronyms, or abbreviations you plan to use for hardware TODO
+Here, you will define any special terms, acronyms, or abbreviations you plan to use for hardware
+N/A
 
 **6.2 Functionality**
 
@@ -89,7 +90,7 @@ Here, you will define any special terms, acronyms, or abbreviations you plan to 
 | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | HRS-01 | Five flex sensors shall be used, one on each finger of a glove, to detect finger bending for note generating. Each sensor shall detect a range of motion of at least 90 degrees.                |
 | HRS-02 | One force-sensitive resistor shall be used to produce the drum beats and shall detect pressures in the range of 0.2 N to 10 N, only sounding a drum once if a finger is held down continuously. |
-| HRS-03 | One speaker should be used to create up to three simultaneous tones at a time. It shall create frequencies in the range of 250 Hz to 1000 Hz.                                                   |
+| HRS-03 | An audio breakout board shall be used to generate a PWM signal for a speaker, which shall produce frequencies in the range of 250 Hz to 1000 Hz.                                                |
 | HRS-04 | A buzzer shall be used to create a drum beat. It shall produce sound using low-frequency PWM signals in the range of 30 Hz to 100 Hz.                                                           |
 | HRS-05 | An LCD screen shall be used to display the current note playing and the beats per minute of the current drum beat, based on the average time between the last four drum beats played.           |
 | HRS-06 | A gyroscope shall be used to change the volume of the music produced and shall detect a range of motion of at least 180 degrees.                                                                |
