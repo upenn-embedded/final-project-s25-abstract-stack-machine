@@ -114,12 +114,12 @@ We will demonstrate the device by having one of us wear the gloves and play a so
 
 *You've got limited time to get this project done! How will you plan your sprint milestones? How will you distribute the work within your team? Review the schedule in the final project manual for exact dates. TODO*
 
-| Milestone  | Functionality Achieved | Distribution of Work |
-| ---------- | ---------------------- | -------------------- |
-| Sprint #1  |                        |                      |
-| Sprint #2  |                        |                      |
-| MVP Demo   |                        |                      |
-| Final Demo |                        |                      |
+| Milestone  | Functionality Achieved                                                                                  | Distribution of Work                                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sprint #1  | Make drum work properly, sew the compartment on the gloves for the hardware, make speaker produce notes | Aarti - code for drum/speakers<br />Sydney - soldering, sewing, help with circuit<br />MC - Work on circuit for hardware, work with Aarti to test with code |
+| Sprint #2  | Make flex sensors work, make sure ADC works                                                             | MC - work with flex sensors<br />Sydney - work with ADC<br />Aarti - help with both flex sensors and ADC (focusing on code)                                 |
+| MVP Demo   | Make gyroscope work                                                                                     | Aarti - code for gyroscope<br />Sydney - circuit integration for gyroscope<br />MC - help with testing code and hardware together                           |
+| Final Demo | Make screen work, test everything, add additional features, solder any parts that are not yet secured   | Aarti/MC - work on code for screen<br />Sydney - soldering, hardware for screen<br />All - testing                                                          |
 
 **This is the end of the Project Proposal section. The remaining sections will be filled out based on the milestone schedule.**
 
