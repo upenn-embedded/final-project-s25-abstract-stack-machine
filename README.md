@@ -53,7 +53,7 @@ The system shall get the current note being played and print the note out on the
 
 **5.1 Definitions, Abbreviations**
 
-Here, you will define any special terms, acronyms, or abbreviations you plan to use for hardware
+Here, you will define any special terms, acronyms, or abbreviations you plan to use for hardware  TODO
 
 **5.2 Functionality**
 
@@ -112,7 +112,7 @@ We will demonstrate the device by having one of us wear the gloves and play a so
 
 ### 9. Sprint Planning
 
-*You've got limited time to get this project done! How will you plan your sprint milestones? How will you distribute the work within your team? Review the schedule in the final project manual for exact dates. TODO*
+*You've got limited time to get this project done! How will you plan your sprint milestones? How will you distribute the work within your team? Review the schedule in the final project manual for exact dates.*
 
 | Milestone  | Functionality Achieved                                                                                  | Distribution of Work                                                                                                                                        |
 | ---------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
