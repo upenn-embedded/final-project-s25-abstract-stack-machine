@@ -14,13 +14,13 @@
 
 *In a few sentences, describe your final project.*
 
-Our final project will consist of two gloves that are used to make music. On one hand, the user can bend their fingers to generate different notes, and on the other hand, the user can tap their fingers to generate drum beats. A screen will inform the user of their current notes played and the BPM of their drumming and there will also be volume control.
+Our final project will consist of two gloves that are used to make music. On one hand, the user can bend their fingers to generate different notes, and on the other hand, the user can tap their fingers to generate drum beats. A screen will inform the user of their current notes played and the BPM of their drumming and there will also be volume control using a gyroscope.
 
 ### 2. Motivation
 
 *What is the problem that you are trying to solve? Why is this project interesting? What is the intended purpose?*
 
-The inspiration of this project is that we were considering how the piano, and other similar instruments, is not very accessible due to its high cost and size.  We wanted to find a way to make instruments such as pianos accessible so that people can play them anywhere and at a lower cost, which is how we decided to work on musical gloves.  Musical gloves allow people to have music at their fingertips, literally.  Furthermore, they are fairly straightforward to play since there are only five notes and drum beats, so it allows people of varied backgrounds musically to use them.  Additionally, as mentioned before, physical instruments are generally expensive, especially pianos which can range from 100 dollars to thousands of dollars.  Thus, these gloves will be accessible to people of many different economic backgrounds, which achieves our goal of bringing music to a wider range of people.  Lastly, these gloves are exceptionally space efficient since they are just hand-sized gloves, so they can even be used as a “travel” or “dorm room” instrument.
+The inspiration of this project is that we were considering how the piano, and other similar instruments, is not very accessible due to its high cost and size.  We wanted to find a way to make instruments such as pianos accessible so that people can play them anywhere and at a lower cost, which is how we decided to work on musical gloves.  Musical gloves allow people to have music at their fingertips, literally.  Furthermore, they are fairly straightforward to play since there are only five notes and a drum beat, so it allows people of varied backgrounds musically to use them.  Additionally, as mentioned before, physical instruments are generally expensive, especially pianos which can range from 100 dollars to thousands of dollars.  Thus, these gloves will be accessible to people of many different economic backgrounds, which achieves our goal of bringing music to a wider range of people.  Lastly, these gloves are exceptionally space efficient since they are just hand-sized gloves, so they can even be used as a “travel” or “dorm room” instrument.
 
 ### 3. System Block Diagram
 
@@ -52,7 +52,7 @@ Software:
 
 The device must be able to produce at least 5 different tones and a drum beat.  It must be able to play notes one after another.  It also must be able to display the note currently being played on the screen that is on the glove.
 
-The system shall get the current note being played and print the note out on the screen within 1s.For validation testing:
+For validation testing:
 
 1. We will use a tuner to determine whether the notes produced are correct.
 2. We will use a logic analyzer to debug and analyze the serial communication with the screen.
@@ -68,7 +68,7 @@ N/A
 | ID     | Description                                                                                                                                                                                                                                         |
 | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | SRS-01 | The system shall get the current note being played and print the note out on the screen within 1s.                                                                                                                                                  |
-| SRS-02 | There shall be a separate timer for each finger on the note-playing hand, so that each can output a note when that finger is pushed down.                                                                                                           |
+| SRS-02 | There shall be a separate input capture interrupt for each finger on the note-playing hand, so that each can output a note when that finger is pushed down.                                                                                         |
 | SRS-03 | A timer shall be used to generate a low PWM signal for the buzzer acting as the drum whenever the finger for the drum is down.                                                                                                                      |
 | SRS-04 | The system shall be able to distinguish from a slight twitch in a finger to actually playing the note using debouncing by only outputting a note if the finger was “down” for longer than a half a second.                                        |
 | SRS-05 | Voltage across each force resistor shall be analyzed at its own output pin, such that using ADC, we can convert a range of voltages to either on or off, signifying if a finger is fully bent.  If it is, the corresponding sound shall be produced |
@@ -111,7 +111,7 @@ N/A
 
 The major components of this project are flex sensors, force-sensitive resistors, a gyroscope, a speaker module with an amplifier, buzzers, and LCD screen, and the ATmega microcontroller. The flex sensors will be placed on the fingers of one glove to detect bending and produce notes. The force-sensitive resistors will be used on the other glove to detect tapping pressure and produce drum beats. A gyroscope will be used for volume control, based on the orientation of the glove. A speaker module with an amplifier will be used to ensure  clear audio, and buzzers will be used for drum beats. The LCD screen will provide real-time feedback, displaying the current note being played and the beats-per-minute of the drum. The ATmega328PB will be the processing unit for the entire system.
 
-Link to BOM:  https://docs.google.com/spreadsheets/d/1fDWNhmdyrAUO53iy5cZIY6yOvVTOgB8NUdtprJ25Ou8/edit?usp=sharing
+Link to BOM:  [https://docs.google.com/spreadsheets/d/1fDWNhmdyrAUO53iy5cZIY6yOvVTOgB8NUdtprJ25Ou8/edit?usp=sharing]()
 
 ### 8. Final Demo Goals
 
