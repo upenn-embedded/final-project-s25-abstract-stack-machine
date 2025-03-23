@@ -26,6 +26,8 @@ The inspiration of this project is that we were considering how the piano, and o
 
 *Show your high level design, as done in WS1 and WS2. What are the critical components in your system? How do they communicate (I2C?, interrupts, ADC, etc.)? What power regulation do you need?*
 
+![Alt text](https://file+.vscode-resource.vscode-cdn.net/c%3A/Users/sydne/Downloads/ESE_3500/final-project-s25-abstract-stack-machine/DesignSketch3.png)
+
 ### 4. Design Sketches
 
 *What will your project look like? Do you have any critical design features? Will you need any special manufacturing techniques to achieve your vision, like power tools, laser cutting, or 3D printing?*
