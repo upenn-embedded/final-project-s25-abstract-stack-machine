@@ -66,7 +66,7 @@ void init_adc() {
 void drum_timer_init() {
 
    // Timer1, prescale 256
-   TCCR1B |= (1 << CS12) | (1 << CS11);
+   TCCR1B |= (1 << CS12) | (1 << CS11) | (1 << CS10);
    
    // Set Timer 1 to Normal
    TCCR1A &= ~(1 << WGM10);
@@ -200,6 +200,15 @@ void drum_timer_init() {
 }
 
 void bpm_calc() {
+
+    int prev_time = drum_times[0]
+    for (int i = 1; i < 5; i++) {
+        curr_time = drum_times[i];
+        time_diff = curr_time - prev_time; // todo overflow !!!!
+        // convert ticks to seconds
+        // 1024 prescaler. 15625 hz.
+    }
+
     // todo
     bpm = 0;
 }
