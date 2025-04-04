@@ -136,9 +136,22 @@ We will demonstrate the device by having one of us wear the gloves and play a so
 
 ### Last week's progress
 
+This week we started off by ordering our parts.  We also used some of Detkin's flex resistors/pressure sensor to test how they work and make the ADC in our code work with it (see picture attached below).  We also worked on the code for once our other parts arrive, so that we can test with the hardware immediately.  This code can be seen in the main.c file within our code folder.  We worked on the LCD display code, the drum code, and the code to produce notes depending on which finger is being pressed down.
+
+![Alt text](IMG_7356.jpg)
+
 ### Current state of project
 
+* We understand how to work with the flex resistors and pressure sensor, and we have tested the range of values that we receive with different resistor values in series.
+* Our parts have been ordered, and we have received our gyroscope part.
+* We wrote most of the code, so as we receive parts this week, the code will be ready to test with.
+
 ### Next week's plan
+
+* Finish the drum's BPM calculation in the code (besides that, the drum code is currently finished)
+* Once we get the sound module, record the notes, test sound module with code
+* Figure out how to use the gyroscope effectively and, correspondingly, the volume control
+* Test LCD screen with code, possibly make the display on the LCD screen more elaborate if there is time
 
 ## Sprint Review #2
 
