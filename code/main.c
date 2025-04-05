@@ -200,17 +200,30 @@ void drum_timer_init() {
 }
 
 void bpm_calc() {
+    int total_ticks = 0;
+    int time_diff;
+    int average_ticks;
+    float secs_per_beat;
 
-    int prev_time = drum_times[0]
+    int prev_time = drum_times[0];
     for (int i = 1; i < 5; i++) {
         curr_time = drum_times[i];
         time_diff = curr_time - prev_time; // todo overflow !!!!
         // convert ticks to seconds
         // 1024 prescaler. 15625 hz.
+
+        if (time_diff < 0) {
+            time_diff+=65536;
+        }
+
+        total_ticks+=time_diff;
     }
 
-    // todo
-    bpm = 0;
+    average_ticks = total_ticks/4;
+    secs_per_beat = float(average_ticks)/15625.0;
+
+    bpm = (int)(60.0/secs_per_beat);
+    
 }
     
 
