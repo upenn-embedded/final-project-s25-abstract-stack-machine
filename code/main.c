@@ -19,11 +19,11 @@
 volatile int finger_adcs[6] = {0, 0, 0, 0, 0, 0}; // drum is 0, fingers are 1-5
 static int throwaway = 1;
 volatile int curr_finger;
-volatile int drum_times[5] = {0, 0, 0, 0, 0};
+volatile uint16_t drum_times[5] = {0, 0, 0, 0, 0};
 volatile int drum_time_idx = 0;
 volatile int overflows;
-volatile int last_drum;
-volatile int curr_drum;
+volatile uint16_t last_drum;
+volatile uint16_t curr_drum;
 volatile int bpm;
 volatile int num_beats;
 
@@ -67,15 +67,24 @@ void init_adc() {
 
 void drum_timer_init() {
 
-   // Timer1, prescale 256
-   TCCR1B |= (1 << CS12) | (1 << CS11) | (1 << CS10);
+   // Timer1, prescale 1024
+   TCCR1B |= (1 << CS12) | (1 << CS10);
+   TCCR1B &= ~(1 << CS11);
    
    // Set Timer 1 to Normal
    TCCR1A &= ~(1 << WGM10);
    TCCR1A &= ~(1 << WGM11);
    TCCR1B &= ~(1 << WGM12);
+   
+   TCNT1 = 0;
    overflows = 0;
+   
+   TIMSK1 |= (1 << TOIE1); // enable overflow interrupt
 
+}
+
+ISR(TIMER1_OVF_vect) {
+    overflows++;
 }
  
  void Initialize() {
@@ -156,8 +165,9 @@ void drum_timer_init() {
     }
  
      finger_adcs[curr_finger] = ADC;
-     curr_finger = (curr_finger + 1) % 5;
+     curr_finger = (curr_finger + 1) % 6;
      select_channel(curr_finger);
+     throwaway = 1;
  
      // Hi Aarti ! This is Sydney. I am writing on your laptop because you said I could.
  }
@@ -201,10 +211,10 @@ void drum_timer_init() {
 
 }
 
-void bpm_calc() {
-    int total_ticks = 0;
-    int time_diff;
-    int average_ticks;
+uint16_t bpm_calc() {
+    uint16_t total_ticks = 0;
+    uint16_t time_diff;
+    uint16_t average_ticks;
     float secs_per_beat;
 
     int prev_time = drum_times[0];
@@ -215,17 +225,22 @@ void bpm_calc() {
         // convert ticks to seconds
         // 1024 prescaler. 15625 hz.
 
-        if (time_diff < 0) {
-            time_diff+=65536;
-        }
+//        if (time_diff < 0) {
+//            time_diff+=65536;
+//        }
+        
+        printf("time diff: %d\t", time_diff);
 
         total_ticks+=time_diff;
+        
+        prev_time = curr_time;
     }
 
     average_ticks = total_ticks/4;
     secs_per_beat = (float)(average_ticks)/15625.0;
 
-    bpm = (int)(60.0/secs_per_beat);
+    bpm = (uint16_t)(60.0/secs_per_beat);
+    return bpm;
     
 }
     
@@ -234,11 +249,16 @@ void bpm_calc() {
  
     int adc_threshold = 500; // todo figure out value
     int drum_adc = finger_adcs[0];
-    int drum_beats=0;
     if (drum_adc > adc_threshold) {
+        
+        if (abs(TCNT1 - drum_times[(drum_time_idx - 1) % 5]) < 2000) {
+//            printf("debounce");
+            return;
+        }
 
-        drum_beats++;
-        //drum_times[drum_time_idx] = TIMER_VALUE;
+        num_beats++;
+        drum_times[drum_time_idx] = TCNT1;
+        printf("timer value: %d\n", drum_times[drum_time_idx]);
         drum_time_idx = (drum_time_idx + 1) % 5;
 
         //finger 0 will be drum and the drum file will be connected to T05 on the sound board which is connected to PE1
@@ -293,10 +313,27 @@ void bpm_calc() {
      
      printf("Start\n");
      
+     int count = 0;
+     
      while(1) {
          
-         printf("FINGER: %d\n", finger_adcs[0]);
-         printf("DRUM: %d\n", finger_adcs[1]);
+        count++;
+        drum();
+         
+         if (count % 10000 == 0) {
+             printf("DRUM: %d\t", finger_adcs[0]);
+            if (num_beats >= 5) {
+                printf("BPM:  %d\n", bpm_calc());
+            }
+         }
+         
+//        printf("TCNT1: %u\n", TCNT1); // should be ~15625 (16MHz / 1024)
+
+         
+//        printf("FINGER: %d\n", finger_adcs[1]);
+        
+         
+         
          
 //         for (int i = 0; i <= 5; i++) {
 //            if (i == 0) {
@@ -307,7 +344,6 @@ void bpm_calc() {
 //                repaint(i);
 //            }
 //         }
-         _delay_ms(1000);
          
      }
  
