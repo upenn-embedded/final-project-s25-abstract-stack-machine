@@ -11,6 +11,8 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "uart.h"
+#include "LCD_GFX.h"
+#include "ST7735.h"
 
 #define F_CPU 16000000UL
  
@@ -164,7 +166,7 @@ void drum_timer_init() {
     if (finger==1) {
         //finger 1 will be C and the C file will be connected to T00 on the sound board which is connected to PD2
         PORTD |= (1 << PD2);
-        delay_ms(100);
+        _delay_ms(100);
         PORTD &= ~(1 << PD2);
 
     }
@@ -172,25 +174,25 @@ void drum_timer_init() {
     {
         //finger 2 will be D and the D file will be connected to T01 on the sound board which is connected to PD3
         PORTD |= (1 << PD3);
-        delay_ms(100);
+        _delay_ms(100);
         PORTD &= ~(1 << PD3);
     }
     else if (finger==3) {
         //finger 3 will be E and the E file will be connected to T02 on the sound board which is connected to PD4
         PORTD |= (1 << PD4);
-        delay_ms(100);
+        _delay_ms(100);
         PORTD &= ~(1 << PD4);
     }
     else if (finger==4) {
         //finger 4 will be F and the F file will be connected to T03 on the sound board which is connected to PD5
         PORTD |= (1 << PD5);
-        delay_ms(100);
+        _delay_ms(100);
         PORTD &= ~(1 << PD5);
     }
     else if (finger==5) {
         //finger 5 will be G and the G file will be connected to T04 on the sound board which is connected to PD7
         PORTD |= (1 << PD7);
-        delay_ms(100);
+        _delay_ms(100);
         PORTD &= ~(1 << PD7);
     }
     else {
@@ -206,6 +208,7 @@ void bpm_calc() {
     float secs_per_beat;
 
     int prev_time = drum_times[0];
+    int curr_time;
     for (int i = 1; i < 5; i++) {
         curr_time = drum_times[i];
         time_diff = curr_time - prev_time; // todo overflow !!!!
@@ -220,7 +223,7 @@ void bpm_calc() {
     }
 
     average_ticks = total_ticks/4;
-    secs_per_beat = float(average_ticks)/15625.0;
+    secs_per_beat = (float)(average_ticks)/15625.0;
 
     bpm = (int)(60.0/secs_per_beat);
     
@@ -231,15 +234,16 @@ void bpm_calc() {
  
     int adc_threshold = 500; // todo figure out value
     int drum_adc = finger_adcs[0];
+    int drum_beats=0;
     if (drum_adc > adc_threshold) {
 
         drum_beats++;
-        drum_times[drum_time_idx] = TIMER VALUE;
+        //drum_times[drum_time_idx] = TIMER_VALUE;
         drum_time_idx = (drum_time_idx + 1) % 5;
 
         //finger 0 will be drum and the drum file will be connected to T05 on the sound board which is connected to PE1
         PORTD |= (1 << PE1);
-        delay_ms(100);
+        _delay_ms(100);
         PORTD &= ~(1 << PE1);
         
     }
@@ -291,15 +295,18 @@ void bpm_calc() {
      
      while(1) {
          
-         for (int i = 0; i <= 5; i++) {
-            if (i == 0) {
-                drum();
-            }
-            else if (fingers_adcs[i] > 100) {
-                produce_sound(i);
-            }
-         }
-         repaint();
+         printf("FINGER: %d\n", finger_adcs[0]);
+         printf("DRUM: %d\n", finger_adcs[1]);
+         
+//         for (int i = 0; i <= 5; i++) {
+//            if (i == 0) {
+//                drum();
+//            }
+//            else if (finger_adcs[i] > 100) {
+//                produce_sound(i);
+//                repaint(i);
+//            }
+//         }
          _delay_ms(1000);
          
      }
