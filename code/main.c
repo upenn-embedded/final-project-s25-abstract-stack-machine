@@ -50,7 +50,8 @@ void init_adc() {
     ADMUX &= ~(1 << MUX3);
     curr_finger = 0;
 
-    ADCSRA |= (1 << ADATE); // Autotriggering of ADC
+    //ADCSRA |= (1 << ADATE); // Autotriggering of ADC
+    ADCSRA &= ~(1 << ADATE); // Disable auto-trigger
 
     // Free running mode ADTS[2:0] = 000
     ADCSRB &= ~(1 << ADTS0);
@@ -62,6 +63,7 @@ void init_adc() {
     DIDR0 |= (1 << ADC0D); // Disable digital input buffer on ADC pin
     ADCSRA |= (1 << ADEN); // Enable ADC
     ADCSRA |= (1 << ADSC); // Start conversion
+    
 
 }
 
@@ -159,15 +161,22 @@ ISR(TIMER1_OVF_vect) {
  
  ISR(ADC_vect) {
 
-    if (throwaway) {
-        throwaway = 0;
-        return;
-    }
+//    if (throwaway) {
+//        throwaway = 0;
+//        return;
+//    }
  
-     finger_adcs[curr_finger] = ADC;
-     curr_finger = (curr_finger + 1) % 6;
-     select_channel(curr_finger);
-     throwaway = 1;
+//     finger_adcs[curr_finger] = ADC;
+//     curr_finger = (curr_finger + 1) % 6;
+//     select_channel(curr_finger);
+    finger_adcs[curr_finger] = ADC;
+
+    curr_finger = (curr_finger + 1) % 6;
+    select_channel(curr_finger);
+
+    _delay_us(10); // brief delay to allow mux to settle
+    ADCSRA |= (1 << ADSC); // Start next conversion manually
+     //throwaway = 1;
  
      // Hi Aarti ! This is Sydney. I am writing on your laptop because you said I could.
  }
@@ -250,16 +259,40 @@ uint16_t bpm_calc() {
     int adc_threshold = 500; // todo figure out value
     int drum_adc = finger_adcs[0];
     if (drum_adc > adc_threshold) {
+        printf("DRUM p2: %d\n", finger_adcs[0]);
         
-        if (abs(TCNT1 - drum_times[(drum_time_idx - 1) % 5]) < 2000) {
-//            printf("debounce");
-            return;
+        
+        if (num_beats < 5) {
+            
+            if (abs(TCNT1 - drum_times[num_beats-1]) < 2000) {
+    //          printf("debounce");
+                return;
+            }
+            
+            drum_times[drum_time_idx] = TCNT1;
+            printf("timer value: %d\n", drum_times[drum_time_idx]);
+            drum_time_idx = (drum_time_idx + 1) % 5;
+            
+        } else {
+            
+            
+            if (abs(TCNT1 - drum_times[4]) < 2000) {
+    //          printf("debounce");
+                return;
+            }
+            
+            // shift
+            for (int i = 0; i < 4; i++) {
+                drum_times[i] = drum_times[i+1];
+            }
+            
+            drum_times[4] = TCNT1;
+            printf("timer value: %d\n", drum_times[drum_time_idx]);
+            drum_time_idx = (drum_time_idx + 1) % 5;
+            
         }
-
+        
         num_beats++;
-        drum_times[drum_time_idx] = TCNT1;
-        printf("timer value: %d\n", drum_times[drum_time_idx]);
-        drum_time_idx = (drum_time_idx + 1) % 5;
 
         //finger 0 will be drum and the drum file will be connected to T05 on the sound board which is connected to PE1
         PORTD |= (1 << PE1);
@@ -321,9 +354,10 @@ uint16_t bpm_calc() {
         drum();
          
          if (count % 10000 == 0) {
-             printf("DRUM: %d\t", finger_adcs[0]);
+             printf("DRUM: %d\n", finger_adcs[0]);
             if (num_beats >= 5) {
                 printf("BPM:  %d\n", bpm_calc());
+                printf("Num_Beats: %d\n", num_beats);
             }
          }
          
