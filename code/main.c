@@ -13,8 +13,11 @@
 #include "uart.h"
 #include "LCD_GFX.h"
 #include "ST7735.h"
+#include "imu.h"
+#include "i2c.h"
 
 #define F_CPU 16000000UL
+#define MPU6050_ADDR 0x68
  
 volatile int finger_adcs[6] = {0, 0, 0, 0, 0, 0}; // drum is 0, fingers are 1-5
 static int throwaway = 1;
@@ -94,6 +97,7 @@ ISR(TIMER1_OVF_vect) {
     init_adc();
     lcd_init();
     drum_timer_init();
+    
 
     DDRD |= (1 << PD2);
     PORTD &= ~(1 << PD2);
@@ -347,19 +351,50 @@ uint16_t bpm_calc() {
      printf("Start\n");
      
      int count = 0;
+    
+      
+      I2C_init();
+
+    // Create an mpu6050_t instance for the sensor
+    mpu6050_t imu;
+    
+    // Initialize the MPU6050 (I2C instance, I2C address)
+    mpu6050_init(&imu, 0, MPU6050_ADDR);
+
      
      while(1) {
          
-        count++;
-        drum();
+          int16_t ax, ay, az, gx, gy, gz;
+        
+        // Read accelerometer and gyroscope data
+        mpu6050_read_accel(&imu, &ax, &ay, &az);
+        mpu6050_read_gyro(&imu, &gx, &gy, &gz);
+        
+        // Print data (for debugging purposes, use UART or serial terminal)
+        printf("Accel: ax=%d, ay=%d, az=%d\n", ax, ay, az);
+        printf("Gyro: gx=%d, gy=%d, gz=%d\n", gx, gy, gz);
+        
+    //    _delay_ms(500);  // Delay for half a second
          
-         if (count % 10000 == 0) {
-             printf("DRUM: %d\n", finger_adcs[0]);
-            if (num_beats >= 5) {
-                printf("BPM:  %d\n", bpm_calc());
-                printf("Num_Beats: %d\n", num_beats);
-            }
-         }
+//        count++;
+//        drum();
+//         
+//         if (count % 10000 == 0) {
+//             printf("DRUM: %d\n", finger_adcs[0]);
+//            if (num_beats >= 5) {
+//                printf("BPM:  %d\n", bpm_calc());
+//                printf("Num_Beats: %d\n", num_beats);
+//            }
+//         }
+//         int16_t ax, ay, az, gx, gy, gz;
+//
+//        if (mpu6050_read_accel(&imu, &ax, &ay, &az) == 0 &&
+//            mpu6050_read_gyro(&imu, &gx, &gy, &gz) == 0) {
+//            printf("? Accel: ax=%d ay=%d az=%d | ? Gyro: gx=%d gy=%d gz=%d\n",
+//                   ax, ay, az, gx, gy, gz);
+//        } else {
+//            printf("? Error reading MPU6050 data\n");
+//        }
          
 //        printf("TCNT1: %u\n", TCNT1); // should be ~15625 (16MHz / 1024)
 
