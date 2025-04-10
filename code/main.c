@@ -344,6 +344,7 @@ uint16_t bpm_calc() {
   */
  int main() {
      
+<<<<<<< HEAD
      Initialize();
      uart_init();
      lcd_init();
@@ -397,26 +398,78 @@ uint16_t bpm_calc() {
 //        }
          
 //        printf("TCNT1: %u\n", TCNT1); // should be ~15625 (16MHz / 1024)
+=======
+    Initialize();
+    uart_init();
+    lcd_init();
+>>>>>>> 19074b4f75d0a16a3621d16254f7718598f3e58e
 
-         
-//        printf("FINGER: %d\n", finger_adcs[1]);
-        
-         
-         
-         
-//         for (int i = 0; i <= 5; i++) {
-//            if (i == 0) {
-//                drum();
-//            }
-//            else if (finger_adcs[i] > 100) {
-//                produce_sound(i);
-//                repaint(i);
+    printf("Start\n");
+    
+    while (1) {
+        printf("C\n");
+        PORTD |= (1 << PD2);
+        _delay_ms(100);
+        PORTD &= ~(1 << PD2);
+        printf("B\n");
+        PORTD |= (1 << PD3);
+        _delay_ms(100);
+        PORTD &= ~(1 << PD3);
+        printf("E\n");
+        PORTD |= (1 << PD4);
+        _delay_ms(100);
+        PORTD &= ~(1 << PD4);
+        //finger 4 will be F and the F file will be connected to T03 on the sound board which is connected to PD5
+        printf("F\n");
+        PORTD |= (1 << PD5);
+        _delay_ms(100);
+        PORTD &= ~(1 << PD5);
+        //finger 5 will be G and the G file will be connected to T04 on the sound board which is connected to PD7
+        printf("G\n");
+        PORTD |= (1 << PD7);
+        _delay_ms(100);
+        PORTD &= ~(1 << PD7);
+    }
+  
+ 
+//     int count = 0;
+//     
+//     while(1) {
+//         
+//        count++;
+//        drum();
+//         
+//         if (count % 10000 == 0) {
+//             printf("DRUM: %d\n", finger_adcs[0]);
+//            if (num_beats >= 5) {
+//                printf("BPM:  %d\n", bpm_calc());
+//                printf("Num_Beats: %d\n", num_beats);
 //            }
 //         }
-         
-     }
+//         
+////        printf("TCNT1: %u\n", TCNT1); // should be ~15625 (16MHz / 1024)
+//
+//         
+////        printf("FINGER: %d\n", finger_adcs[1]);
+//        
+//         
+//         
+//         
+////         for (int i = 0; i <= 5; i++) {
+////            if (i == 0) {
+////                drum();
+////            }
+////            else if (finger_adcs[i] > 100) {
+////                produce_sound(i);
+////                repaint(i);
+////            }
+////         }
+//         
+//     }
+     
+     
  
-     return (EXIT_SUCCESS);
+    return (EXIT_SUCCESS);
  }
  
  
