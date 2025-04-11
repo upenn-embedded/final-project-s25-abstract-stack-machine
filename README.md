@@ -157,9 +157,15 @@ This week we started off by ordering our parts.  We also used some of Detkin's f
 
 ### Last week's progress
 
+We got the notes to play on the speaker when the flex sensor corresponding to that note bends.  We also got the LCD to display the current note and the current correct metronome time based on how fast the drum is playing.  Lastly, we finished the code and started working on getting the gyroscope and buzzer for the drum to work.
+
 ### Current state of project
 
+Currently, we are able to have each flex sensor map to a recording of a note uploaded to the sound board, have the LCD display properly, and the code is displaying the correct metronome speed.
+
 ### Next week's plan
+
+Next week, we hope to finish the gyroscope and buzzer, and then we will hopefully solder everything together and have our MVP!  We will also have the notes play faster by cutting the files to be shorter for each note.
 
 ## MVP Demo
 
