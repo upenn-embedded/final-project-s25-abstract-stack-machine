@@ -96,19 +96,22 @@ ISR(TIMER1_OVF_vect) {
     drum_timer_init();
 
     DDRD |= (1 << PD2);
-    PORTD &= ~(1 << PD2);
+    PORTD |= (1 << PD2);
 
     DDRD |= (1 << PD3);
-    PORTD &= ~(1 << PD3);
+    PORTD |= (1 << PD3);
 
     DDRD |= (1 << PD4);
-    PORTD &= ~(1 << PD4);
+    PORTD |= (1 << PD4);
 
     DDRD |= (1 << PD5);
-    PORTD &= ~(1 << PD5);
+    PORTD |= (1 << PD5);
 
     DDRD |= (1 << PD7);
-    PORTD &= ~(1 << PD7);
+    PORTD |= (1 << PD7);
+    
+    DDRD |= (1 << PD0);
+    PORTD |= (1 << PD0);
      
     sei();
      
@@ -184,35 +187,35 @@ ISR(TIMER1_OVF_vect) {
  void produce_sound(int finger) {
     if (finger==1) {
         //finger 1 will be C and the C file will be connected to T00 on the sound board which is connected to PD2
-        PORTD |= (1 << PD2);
-        _delay_ms(100);
         PORTD &= ~(1 << PD2);
+        _delay_ms(28000);
+        PORTD |= (1 << PD2);
 
     }
     else if (finger==2)
     {
         //finger 2 will be D and the D file will be connected to T01 on the sound board which is connected to PD3
-        PORTD |= (1 << PD3);
-        _delay_ms(100);
         PORTD &= ~(1 << PD3);
+        _delay_ms(28000);
+        PORTD |= (1 << PD3);
     }
     else if (finger==3) {
         //finger 3 will be E and the E file will be connected to T02 on the sound board which is connected to PD4
-        PORTD |= (1 << PD4);
-        _delay_ms(100);
         PORTD &= ~(1 << PD4);
+        _delay_ms(28000);
+        PORTD |= (1 << PD4);
     }
     else if (finger==4) {
         //finger 4 will be F and the F file will be connected to T03 on the sound board which is connected to PD5
-        PORTD |= (1 << PD5);
-        _delay_ms(100);
         PORTD &= ~(1 << PD5);
+        _delay_ms(28000);
+        PORTD |= (1 << PD5);
     }
     else if (finger==5) {
         //finger 5 will be G and the G file will be connected to T04 on the sound board which is connected to PD7
-        PORTD |= (1 << PD7);
-        _delay_ms(100);
         PORTD &= ~(1 << PD7);
+        _delay_ms(28000);
+        PORTD |= (1 << PD7);
     }
     else {
         printf("Invalid finger number\n");
@@ -254,12 +257,12 @@ uint16_t bpm_calc() {
 }
     
 
- void drum() {
+ void drum(int val) {
  
     int adc_threshold = 500; // todo figure out value
-    int drum_adc = finger_adcs[0];
+    int drum_adc = val;
     if (drum_adc > adc_threshold) {
-        printf("DRUM p2: %d\n", finger_adcs[0]);
+        printf("DRUM p2: %d\n", val);
         
         
         if (num_beats < 5) {
@@ -295,9 +298,11 @@ uint16_t bpm_calc() {
         num_beats++;
 
         //finger 0 will be drum and the drum file will be connected to T05 on the sound board which is connected to PE1
-        PORTD |= (1 << PE1);
-        _delay_ms(100);
-        PORTD &= ~(1 << PE1);
+        PORTD &= ~(1 << PD0);
+        _delay_ms(10000000);
+        PORTD |= (1 << PD0);
+        
+        printf("SOUND!\n");
         
     }
     
@@ -342,70 +347,84 @@ uint16_t bpm_calc() {
      
     Initialize();
     uart_init();
-    lcd_init();
+//    lcd_init();
 
     printf("Start\n");
     
-    while (1) {
-        printf("C\n");
-        PORTD |= (1 << PD2);
-        _delay_ms(100);
-        PORTD &= ~(1 << PD2);
-        printf("B\n");
-        PORTD |= (1 << PD3);
-        _delay_ms(100);
-        PORTD &= ~(1 << PD3);
-        printf("E\n");
-        PORTD |= (1 << PD4);
-        _delay_ms(100);
-        PORTD &= ~(1 << PD4);
-        //finger 4 will be F and the F file will be connected to T03 on the sound board which is connected to PD5
-        printf("F\n");
-        PORTD |= (1 << PD5);
-        _delay_ms(100);
-        PORTD &= ~(1 << PD5);
-        //finger 5 will be G and the G file will be connected to T04 on the sound board which is connected to PD7
-        printf("G\n");
-        PORTD |= (1 << PD7);
-        _delay_ms(100);
-        PORTD &= ~(1 << PD7);
-    }
-  
+//    while (1) {
+//        printf("C\n");
+//        PORTD &= ~(1 << PD2);
+//        _delay_ms(28000);
+//        PORTD |= (1 << PD2);
+//        printf("D\n");
+//        PORTD &= ~(1 << PD3);
+//        _delay_ms(28000);
+//        PORTD |= (1 << PD3);
+//        printf("E\n");
+//        PORTD &= ~(1 << PD4);
+//        _delay_ms(28000);
+//        PORTD |= (1 << PD4);
+//        //finger 4 will be F and the F file will be connected to T03 on the sound board which is connected to PD5
+//        printf("F\n");
+//        PORTD &= ~(1 << PD5);
+//        _delay_ms(28000);
+//        PORTD |= (1 << PD5);
+//        //finger 5 will be G and the G file will be connected to T04 on the sound board which is connected to PD7
+//        printf("G\n");
+//        PORTD &= ~(1 << PD7);
+//        _delay_ms(28000);
+//        PORTD |= (1 << PD7);
+//    }
+//  
  
-//     int count = 0;
-//     
-//     while(1) {
-//         
-//        count++;
+     int count = 0;
+     
+     int last_played[6] = {0};
+     
+     while(1) {
+         
+        count++;
 //        drum();
-//         
+         
 //         if (count % 10000 == 0) {
-//             printf("DRUM: %d\n", finger_adcs[0]);
+//            printf("DRUM: %d\n", finger_adcs[0]);
 //            if (num_beats >= 5) {
 //                printf("BPM:  %d\n", bpm_calc());
-//                printf("Num_Beats: %d\n", num_beats);
+////                printf("Num_Beats: %d\n", num_beats);
 //            }
+//            for (int i = 1; i < 6; i++) {
+//                printf("FINGER %d: %d\t", i, finger_adcs[i]);
+//            }
+//            printf("\n");
 //         }
-//         
-////        printf("TCNT1: %u\n", TCNT1); // should be ~15625 (16MHz / 1024)
-//
-//         
-////        printf("FINGER: %d\n", finger_adcs[1]);
-//        
-//         
-//         
-//         
-////         for (int i = 0; i <= 5; i++) {
-////            if (i == 0) {
-////                drum();
-////            }
-////            else if (finger_adcs[i] > 100) {
-////                produce_sound(i);
-////                repaint(i);
-////            }
-////         }
-//         
-//     }
+         
+//        printf("TCNT1: %u\n", TCNT1); // should be ~15625 (16MHz / 1024)
+
+         
+//        printf("FINGER: %d\n", finger_adcs[1]);
+        
+         
+         
+         
+         for (int i = 0; i <= 5; i++) {
+            int val = finger_adcs[i];
+            if (i == 0) {
+                drum(val);
+                last_played[0] = 1;
+            }
+            else if (val < 800 && !last_played[i]) {
+                printf("FINGER %d: %d\n", i, val);
+                produce_sound(i);
+                _delay_ms(2000);
+                repaint(i);
+                last_played[i] = 1;
+            }
+            else if (val >= 800) {
+                last_played[i] = 0;
+            }
+         }
+         
+     }
      
      
  
