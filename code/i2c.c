@@ -1,29 +1,56 @@
-#ifndef MPU6050_H
-#define MPU6050_H
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+#include "uart.h"
 
-#include <stdint.h>
+#define IMU_ADDR 0x68
+// "WHO_AM_I" in main will determine addr
 
-// Default I2C address for MPU6050 (AD0 pin low)
-#define MPU6050_ADDR 0x68
+void I2C_init() {
+    TWBR0 = 0x48; // set the bit rate // 100kHz at 16MHz
+    TWCR0 = (1 << TWEN); // enable TWI
+}
 
-// MPU6050 Register Addresses
-#define MPU6050_REG_PWR_MGMT_1     0x6B
-#define MPU6050_REG_ACCEL_XOUT_H   0x3B
-#define MPU6050_REG_GYRO_XOUT_H    0x43
+void start_con() {
+    // send the start condition
+    TWCR0 = (1<<TWINT)| (1<<TWSTA)|(1<<TWEN);
+    while(!(TWCR0 & (1<<TWINT))); // wait for the flag to be set
+}
 
-// Struct to represent the IMU
-typedef struct {
-    int i2c_instance;
-    uint8_t addr;
-} mpu6050_t;
+void send(uint8_t data) {
+    // send any data onto the I2C bus (could be device address or data)
+    TWDR0 = data;
+    TWCR0 = (1<<TWINT) | (1<<TWEN);
+    while (!(TWCR0 & (1<<TWINT)));
+}
 
-// Initializes the MPU6050 by waking it up
-int mpu6050_init(mpu6050_t *imu, int i2c_instance, uint8_t addr);
+void stop_con() {
+    TWCR0 = (1<<TWINT)| (1<<TWEN)|(1<<TWSTO);
+}
 
-// Reads raw accelerometer data into ax, ay, az
-int mpu6050_read_accel(mpu6050_t *imu, int16_t *ax, int16_t *ay, int16_t *az);
+void write_register(uint8_t reg, uint8_t data) {
+    start_con(); // start condition
+    send(IMU_ADDR << 1); // send device address + W
+    send(reg); // send register address
+    send(data); // send data to be written
+    stop_con();
+}
 
-// Reads raw gyroscope data into gx, gy, gz
-int mpu6050_read_gyro(mpu6050_t *imu, int16_t *gx, int16_t *gy, int16_t *gz);
+uint8_t read_register(uint8_t reg) {
+    uint8_t data;
 
-#endif // MPU6050_H
+    start_con();                     // Send start condition
+    send(0x68 << 1);            // Send device address + write
+    send(reg);                      // Send register address
+
+    start_con();                    // Repeated start
+    send((0x68 << 1) | 1);      // Send device address + read
+
+    TWCR0 = (1 << TWINT) | (1 << TWEN); // Trigger reception, NACK after 1 byte
+    while (!(TWCR0 & (1 << TWINT)));    // Wait for reception
+
+    data = TWDR0;
+
+    stop_con();                     // Send stop condition
+    return data;
+}
