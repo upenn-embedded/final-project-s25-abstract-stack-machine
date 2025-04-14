@@ -129,6 +129,9 @@ ISR(TIMER1_OVF_vect) {
 
     DDRD |= (1 << PD7);
     PORTD |= (1 << PD7);
+    
+    DDRB |= (1 << PB4); // volume output
+    PORTB |= (1 << PB4);
      
     sei();
      
@@ -383,26 +386,32 @@ void make_drum_sound() {
     int16_t yg;
     int16_t zg;
 
-    I2C_init();
+//    I2C_init();
      
      Initialize();
      //uart_init();
      setPaintDisplay();
      
-     printf("Start\n");
+//     printf("Start\n");
      
      repaint(1);
      
      int last_played[6] = {0};
      
-     imu_addr = read_register(WHO_AM_I);
-    write_register(0x6B, 0x00); // Exit sleep mode
+//     imu_addr = read_register(WHO_AM_I);
+//    write_register(0x6B, 0x00); // Exit sleep mode
      
      while(1) {  
-        z = (read_register(ACCEL_ZOUT_H) << 8) | read_register(ACCEL_ZOUT_L);
-        float volume = ((float)(z + 16384) / (2 * 16384)) * 100.0;
-        if (volume < 0) volume = 0;
-        if (volume > 100) volume = 100;
+//        z = (read_register(ACCEL_ZOUT_H) << 8) | read_register(ACCEL_ZOUT_L);
+//        float volume = ((float)(z + 16384) / (2 * 16384)) * 100.0;
+//        if (volume < 0) volume = 0;
+//        if (volume > 100) volume = 100;
+//        
+//        if (volume >= 50) {
+//            DDRB &= ~(1 << PB4);
+//        }
+        
+        
          for (int i = 0; i <= 5; i++) {
             int val = finger_adcs[i];
             if (i == 0) {
