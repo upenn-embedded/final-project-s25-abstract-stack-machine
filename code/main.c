@@ -45,6 +45,7 @@ volatile uint16_t curr_drum;
 volatile int bpm;
 volatile int num_beats;
 volatile int last_played[6] = {0};
+volatile float volume = 50;
 
 void init_adc() {
    
@@ -146,10 +147,10 @@ ISR(TIMER1_OVF_vect) {
             ADMUX &= ~(1 << MUX2);
             ADMUX &= ~(1 << MUX3);
             break;
-        case 1: // C, ADC6 aka PE2
-            ADMUX &= ~(1 << MUX0);
-            ADMUX |= (1 << MUX1);
-            ADMUX |= (1 << MUX2);
+        case 1: // C, ADC1 aka PC1
+            ADMUX |= (1 << MUX0);
+            ADMUX &= ~(1 << MUX1);
+            ADMUX &= ~(1 << MUX2);
             ADMUX &= ~(1 << MUX3);
             break;
         case 2: // D, ADC2 aka PC2
@@ -164,17 +165,18 @@ ISR(TIMER1_OVF_vect) {
             ADMUX &= ~(1 << MUX2);
             ADMUX &= ~(1 << MUX3);
             break;
-        case 4: // F, ADC4 aka PC4
+        case 4: // F, ADC6 aka PE2
             ADMUX &= ~(1 << MUX0);
-            ADMUX &= ~(1 << MUX1);
+            ADMUX |= (1 << MUX1);
             ADMUX |= (1 << MUX2);
             ADMUX &= ~(1 << MUX3);
             break;
-        case 5: // G, ADC5 aka PC5
+        case 5: // G, ADC7 aka PE3
             ADMUX |= (1 << MUX0);
-            ADMUX &= ~(1 << MUX1);
+            ADMUX |= (1 << MUX1);
             ADMUX |= (1 << MUX2);
             ADMUX &= ~(1 << MUX3);
+            break;
         default: return;
     }
  
@@ -360,6 +362,9 @@ void make_drum_sound() {
             break;
         default: return;
     }
+    char buf[4];
+    sprintf(buf, "%d", (int)(volume));
+    LCD_drawString(xNote, yNote-75, buf, textColor, backgroundColor);
     if (num_beats >= 5) {
         bpm_calc();
         sprintf(buffer, "%d", bpm);
@@ -386,11 +391,13 @@ void make_drum_sound() {
     int16_t yg;
     int16_t zg;
 
-//    I2C_init();
+    I2C_init();
      
      Initialize();
-     //uart_init();
+     uart_init();
      setPaintDisplay();
+     
+     int count = 0;
      
 //     printf("Start\n");
      
@@ -398,30 +405,50 @@ void make_drum_sound() {
      
      int last_played[6] = {0};
      
-//     imu_addr = read_register(WHO_AM_I);
-//    write_register(0x6B, 0x00); // Exit sleep mode
+     imu_addr = read_register(WHO_AM_I);
+    write_register(0x6B, 0x00); // Exit sleep mode
      
      while(1) {  
-//        z = (read_register(ACCEL_ZOUT_H) << 8) | read_register(ACCEL_ZOUT_L);
+        int16_t z = (int16_t)(((uint16_t)read_register(ACCEL_ZOUT_H) << 8) | read_register(ACCEL_ZOUT_L));
 //        float volume = ((float)(z + 16384) / (2 * 16384)) * 100.0;
 //        if (volume < 0) volume = 0;
 //        if (volume > 100) volume = 100;
-//        
-//        if (volume >= 50) {
-//            DDRB &= ~(1 << PB4);
-//        }
+        
+        int16_t z_offset = 16384;
+
+        // Calculate volume
+        volume = ((float)(z + z_offset) / (2 * (float)z_offset)) * 100.0;
+
+        // Clamp volume to a range of 0 to 100%
+        if (volume < 0.0) {
+            volume = 0;
+        }
+        if (volume > 100.0) {
+            volume = 100;
+        }
+        
+        if ((int) volume > 50) {
+            DDRB &= ~(1 << PB4);
+        }
+        
+        count++;
+        if (count % 1000 == 0) {
+            printf("z: %d\t", z);
+            printf("volume: %d\n", (int)(volume));
+        }
         
         
          for (int i = 0; i <= 5; i++) {
             int val = finger_adcs[i];
             if (i == 0) {
+                repaint(i);
                 drum(val);
                 last_played[0] = 1;
             }
             else if (val < 800 && !last_played[i]) {
                 printf("FINGER %d: %d\n", i, val);
-                produce_sound(i);
                 repaint(i);
+                produce_sound(i);
                 last_played[i] = 1;
             }
             else if (val >= 800) {
