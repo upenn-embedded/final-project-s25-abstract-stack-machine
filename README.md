@@ -161,7 +161,11 @@ We got the notes to play on the speaker when the flex sensor corresponding to th
 
 ### Current state of project
 
-Currently, we are able to have each flex sensor map to a recording of a note uploaded to the sound board, have the LCD display properly, and the code is displaying the correct metronome speed.
+Currently, we are able to have each flex sensor map to a recording of a note uploaded to the sound board, have the LCD display properly, and the code is displaying the correct metronome speed.	
+
+Video of notes being played:  https://urldefense.com/v3/__https://drive.google.com/file/d/1KBB0TX3Fz0eO-971sgEhP2V4Q8SCNbPN/view?usp=sharing__;!!IBzWLUs!VyujkIu8VdPW4JN_7TM5EVhrKQ7qoLnUNACdtYz9dQbhhgWm7lLtnuIVqeHwmLHvDTPRrnVH5BqXGENh1URaaV2y$
+
+![Alt text](unnamed.png)
 
 ### Next week's plan
 
