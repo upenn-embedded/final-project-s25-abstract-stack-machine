@@ -55,6 +55,11 @@ volatile int last_played[6] = {0};
 volatile float volume = 50;
 volatile int octave = 0; // 0 for higher octave (default), 1 for lower
 
+volatile int drumming = 0;
+volatile int noting = 0;
+volatile int drum_count = 0;
+volatile int note_count = 0;
+
 void init_adc() {
    
     // Setup for ADC (10bit = 0-1023)
@@ -196,54 +201,55 @@ ISR(TIMER1_OVF_vect) {
  }
 
  void produce_sound(int finger) {
+    noting = 1;
     if (finger==1) {
         // Finger 1 will be C and the C file will be connected to T00 on the sound board
         PORTD &= ~(1 << C_PIN);
         printf("Playing C!!\n");
-            _delay_ms(2800000);
-            PORTD |= (1 << C_PIN);  
+//            _delay_ms(28000);
+//            PORTD |= (1 << C_PIN);  
     }
     else if (finger==2)
     {
         //finger 2 will be D and the D file will be connected to T01 on the sound board which is connected to PD3
         PORTD &= ~(1 << D_PIN);
-            _delay_ms(28000);
-        PORTD |= (1 << D_PIN);
+//            _delay_ms(28000);
+//        PORTD |= (1 << D_PIN);
     }
     else if (finger==3) {
         //finger 3 will be E and the E file will be connected to T02 on the sound board which is connected to PD4
         if (octave == 0) { // Toggle higher octave
             PORTD &= ~(1 << E_PIN);
-            _delay_ms(28000);
-            PORTD |= (1 << E_PIN);
+//            _delay_ms(28000);
+//            PORTD |= (1 << E_PIN);
         } else if (octave == 1) {
             PORTD &= ~(1 << A_PIN);
-            _delay_ms(28000);
-            PORTD |= (1 << A_PIN);
+//            _delay_ms(28000);
+//            PORTD |= (1 << A_PIN);
         }
     }
     else if (finger==4) {
         //finger 4 will be F and the F file will be connected to T03 on the sound board which is connected to PD5
         if (octave == 0) { // Toggle higher octave
             PORTD &= ~(1 << F_PIN);
-            _delay_ms(28000);
-            PORTD |= (1 << F_PIN);
+//            _delay_ms(28000);
+//            PORTD |= (1 << F_PIN);
         } else if (octave == 1) {
             PORTE &= ~(1 << B_PIN);
-            _delay_ms(28000);
-            PORTE |= (1 << B_PIN);
+//            _delay_ms(28000);
+//            PORTE |= (1 << B_PIN);
         }
     }
     else if (finger==5) {
         //finger 5 will be G and the G file will be connected to T04 on the sound board which is connected to PD7
         if (octave == 0) { // Toggle higher octave
             PORTD &= ~(1 << G_PIN);
-            _delay_ms(28000);
-            PORTD |= (1 << G_PIN);
+//            _delay_ms(28000);
+//            PORTD |= (1 << G_PIN);
         } else if (octave == 1) {
             PORTE &= ~(1 << C_HI_PIN);
-            _delay_ms(28000);
-            PORTE |= (1 << C_HI_PIN);
+//            _delay_ms(28000);
+//            PORTE |= (1 << C_HI_PIN);
         }
     }
     else {
@@ -252,97 +258,96 @@ ISR(TIMER1_OVF_vect) {
 
 }
 
-//uint16_t bpm_calc() {
-//   
-//    if (num_beats < 5) {
-//        return -1;
-//    }
-//   
-//    uint16_t total_ticks = 0;
-//    uint16_t time_diff;
-//    uint16_t average_ticks;
-//    float secs_per_beat;
-//
-//    int prev_time = drum_times[0];
-//    int curr_time;
-//    for (int i = 1; i < 5; i++) {
-//        curr_time = drum_times[i];
-//        time_diff = curr_time - prev_time;
-//        total_ticks+=time_diff;
-//       
-//        prev_time = curr_time;
-//    }
-//
-//    average_ticks = total_ticks/4;
-//    secs_per_beat = (float)(average_ticks)/15625.0;
-//
-//    bpm = (uint16_t)(60.0/secs_per_beat);
-//    return bpm;
-//   
-//}
-//
-//void make_drum_sound() {
-//   
-//    DDRD |= (1<<PD0);
-//   
-//   
-//    TCCR3A = (1 << COM3A1) | (1 << COM3B1) | (1 << WGM31);
-//    TCCR3B = (1 << WGM33) | (1 << CS30);  // No prescaler
-//
-//    ICR3 = 65535;              // Max period
-//    OCR3A = ICR3 / 2;          // 50% duty cycle
-//    
-//    _delay_ms(200);
-//    
-//    TCCR3A &= ~((1 << COM3A1) | (1 << COM3B1));
-//    
-//    PORTD &= ~(1 << PD0); // Turn off PD0
-//
-//}
-//   
-//
-// void drum(int val) {
-// 
-//    int adc_threshold = 500; // todo figure out value
-//    int drum_adc = val;
-//    if (drum_adc > adc_threshold) {
-//       
-//       
-//        if (num_beats < 5) {
-//           
-//            if (abs(TCNT1 - drum_times[num_beats-1]) < 2000) {
-//                return;
-//            }
-//           
-//            drum_times[drum_time_idx] = TCNT1;
-//            
-//            drum_time_idx = (drum_time_idx + 1) % 5;
-//           
-//        } else {
-//           
-//           
-//            if (abs(TCNT1 - drum_times[4]) < 2000) {
-//                return;
-//            }
-//           
-//            // shift
-//            for (int i = 0; i < 4; i++) {
-//                drum_times[i] = drum_times[i+1];
-//            }
-//           
-//            drum_times[4] = TCNT1;
-//            drum_time_idx = (drum_time_idx + 1) % 5;
-//           
-//        }
-//       
-//        num_beats++;
-//       
-//        make_drum_sound();
-//       
-//               
-//    }
-//   
-// }
+uint16_t bpm_calc() {
+   
+    if (num_beats < 5) {
+        return -1;
+    }
+   
+    uint16_t total_ticks = 0;
+    uint16_t time_diff;
+    uint16_t average_ticks;
+    float secs_per_beat;
+
+    int prev_time = drum_times[0];
+    int curr_time;
+    for (int i = 1; i < 5; i++) {
+        curr_time = drum_times[i];
+        time_diff = curr_time - prev_time;
+        total_ticks+=time_diff;
+       
+        prev_time = curr_time;
+    }
+
+    average_ticks = total_ticks/4;
+    secs_per_beat = (float)(average_ticks)/15625.0;
+
+    bpm = (uint16_t)(60.0/secs_per_beat);
+    return bpm;
+   
+}
+
+void make_drum_sound() {
+        
+    drumming = 1;
+   
+    DDRD |= (1<<PD0);
+   
+   
+    TCCR3A = (1 << COM3A1) | (1 << COM3B1) | (1 << WGM31);
+    TCCR3B = (1 << WGM33) | (1 << CS30);  // No prescaler
+
+    ICR3 = 65535;              // Max period
+    OCR3A = ICR3 / 2;          // 50% duty cycle
+    
+    
+ 
+
+}
+   
+
+ void drum(int val) {
+ 
+    int adc_threshold = 500; // todo figure out value
+    int drum_adc = val;
+    if (drum_adc > adc_threshold) {
+       
+       
+        if (num_beats < 5) {
+           
+            if (abs(TCNT1 - drum_times[num_beats-1]) < 2000) {
+                return;
+            }
+           
+            drum_times[drum_time_idx] = TCNT1;
+            
+            drum_time_idx = (drum_time_idx + 1) % 5;
+           
+        } else {
+           
+           
+            if (abs(TCNT1 - drum_times[4]) < 2000) {
+                return;
+            }
+           
+            // shift
+            for (int i = 0; i < 4; i++) {
+                drum_times[i] = drum_times[i+1];
+            }
+           
+            drum_times[4] = TCNT1;
+            drum_time_idx = (drum_time_idx + 1) % 5;
+           
+        }
+       
+        num_beats++;
+       
+        make_drum_sound();
+       
+               
+    }
+   
+ }
  
  void setPaintDisplay() {
      int xNote = LCD_WIDTH/2;
@@ -363,7 +368,17 @@ ISR(TIMER1_OVF_vect) {
     int textColor = BLACK;
     int backgroundColor = WHITE;
     char buffer[20];
+    char buf[4];
     switch(finger) {
+        case 0: 
+            sprintf(buf, "%d", (int)(volume));
+            LCD_drawString(xNote, yNote-75, buf, textColor, backgroundColor);
+            if (num_beats >= 5) {
+                bpm_calc();
+                sprintf(buffer, "%d", bpm);
+                LCD_drawString(LCD_WIDTH/2 - 20, LCD_WIDTH/2, buffer, textColor, backgroundColor);
+            }
+            break;
         case 1:
             LCD_drawString(xNote+40, yNote-50, "C", textColor, backgroundColor);
             break;
@@ -391,16 +406,18 @@ ISR(TIMER1_OVF_vect) {
                 LCD_drawString(xNote+40, yNote-50, "C2", textColor, backgroundColor);
             }
             break;
-        default: return;
-    }
-    char buf[4];
-    sprintf(buf, "%d", (int)(volume));
-    LCD_drawString(xNote, yNote-75, buf, textColor, backgroundColor);
-    if (num_beats >= 5) {
-        //bpm_calc();
-        sprintf(buffer, "%d", bpm);
-        LCD_drawString(LCD_WIDTH/2 - 20, LCD_WIDTH/2, buffer, textColor, backgroundColor);
-    }
+    } 
+ }
+ 
+ void turn_notes_off() {
+    PORTD |= (1 << C_PIN);
+    PORTD |= (1 << D_PIN);
+    PORTD |= (1 << E_PIN);
+    PORTD |= (1 << F_PIN);
+    PORTD |= (1 << G_PIN);
+    PORTD |= (1 << A_PIN);
+    PORTE |= (1 << B_PIN);
+    PORTE |= (1 << C_HI_PIN);
  }
  
  /*
@@ -411,7 +428,7 @@ ISR(TIMER1_OVF_vect) {
     I2C_init();
      
     Initialize();
-    uart_init();
+    //uart_init();
     setPaintDisplay();
      
     int count = 0;
@@ -424,6 +441,27 @@ ISR(TIMER1_OVF_vect) {
     write_register(0x6B, 0x00); // Exit sleep mode
      
     while(1) {  
+        
+        if (drumming) {
+            drum_count++;
+        }
+        if (drum_count >= 2) {
+            drumming = 0;
+            drum_count = 0;
+            TCCR3A &= ~((1 << COM3A1) | (1 << COM3B1));
+            PORTD &= ~(1 << PD0); // Turn off PD0
+        }
+        
+        if (noting) {
+            note_count++;
+        }
+        if (note_count >= 1000) {
+            noting = 0;
+            turn_notes_off();
+        }
+        
+        
+        
         int16_t z = (int16_t)(((uint16_t)read_register(ACCEL_ZOUT_H) << 8) | read_register(ACCEL_ZOUT_L));
         float h = ((float)(z + 16384) / (2 * 16384)) * 100.0;
         
@@ -440,8 +478,8 @@ ISR(TIMER1_OVF_vect) {
          for (int i = 0; i <= 5; i++) {
             int val = finger_adcs[i];
             if (i == 0) {
-                repaint(i);
-               // drum(val);
+                drum(val);
+                repaint(0);
                 last_played[0] = 1;
             }
             else if (val < 800 && !last_played[i]) {
