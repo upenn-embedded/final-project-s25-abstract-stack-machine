@@ -214,8 +214,7 @@ HRS-06: We are using a gyroscope which can detect the given range of motion, but
 
    1. Show how you collected data and the outcomes.
 
-   TODO
-   We used oscilloscopes.
+   We used the oscilloscope when debugging to check that our pins were going high or low as expected, and to see the PWM wave for the buzzer. For our other hardware requirement specifications we could tell if they were met by hearing the notes played, seeing the screen display, etc.
 
 
 6. Show off the remaining elements that will make your project whole: mechanical casework, supporting graphical user interface (GUI), web portal, etc.

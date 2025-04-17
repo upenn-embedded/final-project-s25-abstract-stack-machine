@@ -34,7 +34,7 @@
 #define GYRO_ZOUT_L 0x48
 
 #define C_PIN PD1
-#define D_PIN PD2
+#define D_PIN PB5
 #define E_PIN PD3
 #define F_PIN PD4
 #define G_PIN PD5   
@@ -205,7 +205,7 @@ ISR(TIMER1_OVF_vect) {
     if (finger==1) {
         // Finger 1 will be C and the C file will be connected to T00 on the sound board
         PORTD &= ~(1 << C_PIN);
-        printf("Playing C!!\n");
+//        printf("Playing C!!\n");
 //            _delay_ms(28000);
 //            PORTD |= (1 << C_PIN);  
     }
@@ -288,6 +288,8 @@ uint16_t bpm_calc() {
 }
 
 void make_drum_sound() {
+    
+    printf("making drum sound...\n");
         
     drumming = 1;
    
@@ -310,8 +312,10 @@ void make_drum_sound() {
  
     int adc_threshold = 500; // todo figure out value
     int drum_adc = val;
+
     if (drum_adc > adc_threshold) {
        
+        printf("greater than threshold\n");
        
         if (num_beats < 5) {
            
@@ -368,11 +372,8 @@ void make_drum_sound() {
     int textColor = BLACK;
     int backgroundColor = WHITE;
     char buffer[20];
-    char buf[4];
     switch(finger) {
         case 0: 
-            sprintf(buf, "%d", (int)(volume));
-            LCD_drawString(xNote, yNote-75, buf, textColor, backgroundColor);
             if (num_beats >= 5) {
                 bpm_calc();
                 sprintf(buffer, "%d", bpm);
@@ -428,12 +429,14 @@ void make_drum_sound() {
     I2C_init();
      
     Initialize();
-    //uart_init();
+//    uart_init();
     setPaintDisplay();
+    
+    printf("hello\n");
      
     int count = 0;
      
-    repaint(1);
+//    repaint(1);
      
     int last_played[6] = {0};
      
@@ -441,6 +444,10 @@ void make_drum_sound() {
     write_register(0x6B, 0x00); // Exit sleep mode
      
     while(1) {  
+        
+        printf("hi \n");
+        
+
         
         if (drumming) {
             drum_count++;
@@ -455,8 +462,9 @@ void make_drum_sound() {
         if (noting) {
             note_count++;
         }
-        if (note_count >= 1000) {
+        if (note_count >= 20) {
             noting = 0;
+            note_count=0;
             turn_notes_off();
         }
         
@@ -465,6 +473,7 @@ void make_drum_sound() {
         int16_t z = (int16_t)(((uint16_t)read_register(ACCEL_ZOUT_H) << 8) | read_register(ACCEL_ZOUT_L));
         float h = ((float)(z + 16384) / (2 * 16384)) * 100.0;
         
+//        int h = 0;
         printf("Height: %d\n", h);
         
         if ((int) h < 50) {
@@ -480,7 +489,6 @@ void make_drum_sound() {
             if (i == 0) {
                 drum(val);
                 repaint(0);
-                last_played[0] = 1;
             }
             else if (val < 800 && !last_played[i]) {
                 printf("FINGER %d: %d\n", i, val);
