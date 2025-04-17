@@ -161,7 +161,7 @@ We got the notes to play on the speaker when the flex sensor corresponding to th
 
 ### Current state of project
 
-Currently, we are able to have each flex sensor map to a recording of a note uploaded to the sound board, have the LCD display properly, and the code is displaying the correct metronome speed.	
+Currently, we are able to have each flex sensor map to a recording of a note uploaded to the sound board, have the LCD display properly, and the code is displaying the correct metronome speed.
 
 Video of notes being played:  https://urldefense.com/v3/__https://drive.google.com/file/d/1KBB0TX3Fz0eO-971sgEhP2V4Q8SCNbPN/view?usp=sharing__;!!IBzWLUs!VyujkIu8VdPW4JN_7TM5EVhrKQ7qoLnUNACdtYz9dQbhhgWm7lLtnuIVqeHwmLHvDTPRrnVH5BqXGENh1URaaV2y$
 
@@ -174,19 +174,63 @@ Next week, we hope to finish the gyroscope and buzzer, and then we will hopefull
 ## MVP Demo
 
 1. Show a system block diagram & explain the hardware implementation.
+
+TODO
+
 2. Explain your firmware implementation, including application logic and critical drivers you've written.
+
+Note playing / Drum beats: We use the ADC interrupt to obtain the ADC value corresponding to each flex resistor on each finger and the pressure sensor for the drum. In the ADC interrupt, we switch the ADMUX value to cycle through converting the values of each finger, and we assign these values accordingly.
+LCD Screen: We are using the SPI serial communication protocol to display the current note and BPM on the LCD screen.
+Gyroscope: We are using the I2C serial communication protocol to obtain the tilt of the gyroscope and trigger different notes to play. 
+Drum: We are generating a PWM wave at a low frequency in order to power the buzzer that acts as the drum.
+Sound module: We communicate with the sound module just by using GPIO pins and pulling a certain trigger pin low when we want its corresponding note file to play.
+
 3. Demo your device.
+
+Done during MVP Demo.
+
 4. Have you achieved some or all of your Software Requirements Specification (SRS)?
 
+SRS-01: We have achieved this as the current note displays on the screen while the note plays.
+SRS-02: We are instead implementing this feature with ADC instead of input capture interrupts.
+SRS-03: We have achieved this, as the buzzer makes a noise whenever the user presses the pressure sensor.
+SRS-04: We are not using this exact debouncing technique, but we are instead playing the note only when a certain threshold of bending has been reached, and requiring the user to unbend their finger before playing that note again. We have also added debouncing to the pressure sensor by making sure that one tap corresponds to one drum beat, by checking the timer values of the detected taps.
+SRS-05: We have achieved this as using an ADC threshold value is how we determine whether a note should play.
+
    1. Show how you collected data and the outcomes.
+
+   In the initial stages, we used many print statements to look at variables during our execution. We determined the ADC thresholds for the fingers and drum using this method, in addition to the timer "debouncing" value we used for the drum beats. After our parts began working, for most of our testing, it was easy to see if our funcionality was correct--we checked that the correct notes played when they were supposed to, the drum buzzer produced sound, the LCD changed accordingly, and the gyroscope affected the notes.
+
 5. Have you achieved some or all of your Hardware Requirements Specification (HRS)?
 
+HRS-01: We achieved this as it provides our basic note playing functionality.
+HRS-02: We have partially achieved this as our force sensitive resistor can detect pressures of finger taps. However, we have not yet added the functionality that the drum will be heard only once if a finger is held down continuously.
+HRS-03: We changed the hardware we are using to produce sound. We are now using an audio board which plays recorded note files when a trigger pin is pulled low.
+HRS-04: We have achieved this for our buzzer drum.
+HRS-05: We are displaying this information on the screen, but we are using the last five drum beats played instead.
+HRS-06: We are using a gyroscope which can detect the given range of motion, but we are now using it to add three higher notes (obtaining a full scale) rather than to change the volume.
+
    1. Show how you collected data and the outcomes.
+
+   TODO
+   We used oscilloscopes.
+
+
 6. Show off the remaining elements that will make your project whole: mechanical casework, supporting graphical user interface (GUI), web portal, etc.
+
+We need to finish soldering all the parts to make the entire system more compact and we need to sew them onto the gloves we will use. We also may make the LCD display look less plain. We also need to figure out how to power both the ATMega and the sound module / speaker with a battery rather than the benchtop power supply.
+
 7. What is the riskiest part remaining of your project?
 
+The riskiest part remaining of our project is moving all of our components onto gloves, because there is the risk that we will do something incorrectly and a part will stop working or not work as well.
+
    1. How do you plan to de-risk this?
+
+   We plan to de-risk this by testing our parts at every stage as we transfer them to the gloves, and being careful to have all the necessary and correct connections.
+
 8. What questions or help do you need from the teaching team?
+
+We do not currently have questions.
 
 ## Final Project Report
 
