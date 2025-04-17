@@ -175,7 +175,9 @@ Next week, we hope to finish the gyroscope and buzzer, and then we will hopefull
 
 1. Show a system block diagram & explain the hardware implementation.
 
-TODO
+![power](power_blocks.png)
+
+![firmware](firmware_blocks.png)
 
 2. Explain your firmware implementation, including application logic and critical drivers you've written.
 
