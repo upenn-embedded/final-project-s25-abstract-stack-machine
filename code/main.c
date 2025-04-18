@@ -34,7 +34,7 @@
 #define GYRO_ZOUT_L 0x48
 
 #define C_PIN PD1
-#define D_PIN PB5
+#define D_PIN PD2
 #define E_PIN PD3
 #define F_PIN PD4
 #define G_PIN PD5   
@@ -202,6 +202,7 @@ ISR(TIMER1_OVF_vect) {
 
  void produce_sound(int finger) {
     noting = 1;
+    note_count = 0;
     if (finger==1) {
         // Finger 1 will be C and the C file will be connected to T00 on the sound board
         PORTD &= ~(1 << C_PIN);
@@ -295,8 +296,10 @@ void make_drum_sound() {
    
     DDRD |= (1<<PD0);
    
+    DDRD &= ~(1 << PD2);
    
     TCCR3A = (1 << COM3A1) | (1 << COM3B1) | (1 << WGM31);
+//    TCCR3A = (1 << COM3A1) | (1 << WGM31);
     TCCR3B = (1 << WGM33) | (1 << CS30);  // No prescaler
 
     ICR3 = 65535;              // Max period
@@ -425,23 +428,22 @@ void make_drum_sound() {
   * 
   */
  int main() {
-    int imu_addr;
-    I2C_init();
+//    int imu_addr;
+//    I2C_init();
      
     Initialize();
 //    uart_init();
     setPaintDisplay();
     
-    printf("hello\n");
+    //printf("hello\n");
      
-    int count = 0;
+   // int count = 0;
      
 //    repaint(1);
      
-    int last_played[6] = {0};
-     
-    imu_addr = read_register(WHO_AM_I);
-    write_register(0x6B, 0x00); // Exit sleep mode
+//     
+//    imu_addr = read_register(WHO_AM_I);
+//    write_register(0x6B, 0x00); // Exit sleep mode
      
     while(1) {  
         
@@ -457,12 +459,14 @@ void make_drum_sound() {
             drum_count = 0;
             TCCR3A &= ~((1 << COM3A1) | (1 << COM3B1));
             PORTD &= ~(1 << PD0); // Turn off PD0
+            DDRD |= (1 << PD2);
+            turn_notes_off();
         }
         
         if (noting) {
             note_count++;
         }
-        if (note_count >= 20) {
+        if (note_count >= 10000) {
             noting = 0;
             note_count=0;
             turn_notes_off();
@@ -470,19 +474,19 @@ void make_drum_sound() {
         
         
         
-        int16_t z = (int16_t)(((uint16_t)read_register(ACCEL_ZOUT_H) << 8) | read_register(ACCEL_ZOUT_L));
-        float h = ((float)(z + 16384) / (2 * 16384)) * 100.0;
-        
-//        int h = 0;
-        printf("Height: %d\n", h);
-        
-        if ((int) h < 50) {
-            printf("Switching to low octave...");
-            octave = 1;
-        } else if ((int) h >= 50) {
-            octave = 0;
-            printf("Switching to high octave...");
-        }
+//        int16_t z = (int16_t)(((uint16_t)read_register(ACCEL_ZOUT_H) << 8) | read_register(ACCEL_ZOUT_L));
+//        float h = ((float)(z + 16384) / (2 * 16384)) * 100.0;
+//        
+////        int h = 0;
+//        printf("Height: %d\n", h);
+//        
+//        if ((int) h < 50) {
+//            printf("Switching to low octave...");
+//            octave = 1;
+//        } else if ((int) h >= 50) {
+//            octave = 0;
+//            printf("Switching to high octave...");
+//        }
        
          for (int i = 0; i <= 5; i++) {
             int val = finger_adcs[i];
@@ -490,13 +494,13 @@ void make_drum_sound() {
                 drum(val);
                 repaint(0);
             }
-            else if (val < 800 && !last_played[i]) {
+            else if (val < 700 && !last_played[i]) {
                 printf("FINGER %d: %d\n", i, val);
                 repaint(i);
                 produce_sound(i);
                 last_played[i] = 1;
             }
-            else if (val >= 800) {
+            else if (val >= 700) {
                 last_played[i] = 0;
             }
          }
