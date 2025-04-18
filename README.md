@@ -179,17 +179,21 @@ Next week, we hope to finish the gyroscope and buzzer, and then we will hopefull
 
 ![firmware](firmware_blocks.png)
 
+Hardware Explanation: The notes are selected by bending flex resistors which connect a 5V source to ground. As they are bent, the voltage value across the resistor changes, and we measure the significance of this change using ADC. Once the software determines which note should be produced, a ground signal is sent to the corresponding pin on the sound board, which causes audio to play through our speaker. We also have a force sensor for the drum, and our software uses ADC to detect significant pressure on the sensor which then sends a low frequency PWM signal to a buzzer for a short period of time.
+
 2. Explain your firmware implementation, including application logic and critical drivers you've written.
 
 Note playing / Drum beats: We use the ADC interrupt to obtain the ADC value corresponding to each flex resistor on each finger and the pressure sensor for the drum. In the ADC interrupt, we switch the ADMUX value to cycle through converting the values of each finger, and we assign these values accordingly.
 LCD Screen: We are using the SPI serial communication protocol to display the current note and BPM on the LCD screen.
-Gyroscope: We are using the I2C serial communication protocol to obtain the tilt of the gyroscope and trigger different notes to play. 
+Gyroscope: We are using the I2C serial communication protocol to obtain the tilt of the gyroscope and trigger different notes to play.
 Drum: We are generating a PWM wave at a low frequency in order to power the buzzer that acts as the drum.
 Sound module: We communicate with the sound module just by using GPIO pins and pulling a certain trigger pin low when we want its corresponding note file to play.
 
 3. Demo your device.
 
 Done during MVP Demo.
+
+Video version: [https://drive.google.com/file/d/1qeuUDVJBkbPQQ1umTGwltdhGMNSt_Sxz/view?usp=sharing](https://drive.google.com/file/d/1qeuUDVJBkbPQQ1umTGwltdhGMNSt_Sxz/view?usp=sharing)
 
 4. Have you achieved some or all of your Software Requirements Specification (SRS)?
 
@@ -199,7 +203,7 @@ SRS-03: We have achieved this, as the buzzer makes a noise whenever the user pre
 SRS-04: We are not using this exact debouncing technique, but we are instead playing the note only when a certain threshold of bending has been reached, and requiring the user to unbend their finger before playing that note again. We have also added debouncing to the pressure sensor by making sure that one tap corresponds to one drum beat, by checking the timer values of the detected taps.
 SRS-05: We have achieved this as using an ADC threshold value is how we determine whether a note should play.
 
-   1. Show how you collected data and the outcomes.
+1. Show how you collected data and the outcomes.
 
    In the initial stages, we used many print statements to look at variables during our execution. We determined the ADC thresholds for the fingers and drum using this method, in addition to the timer "debouncing" value we used for the drum beats. After our parts began working, for most of our testing, it was easy to see if our funcionality was correct--we checked that the correct notes played when they were supposed to, the drum buzzer produced sound, the LCD changed accordingly, and the gyroscope affected the notes.
 
@@ -212,10 +216,9 @@ HRS-04: We have achieved this for our buzzer drum.
 HRS-05: We are displaying this information on the screen, but we are using the last five drum beats played instead.
 HRS-06: We are using a gyroscope which can detect the given range of motion, but we are now using it to add three higher notes (obtaining a full scale) rather than to change the volume.
 
-   1. Show how you collected data and the outcomes.
+1. Show how you collected data and the outcomes.
 
    We used the oscilloscope when debugging to check that our pins were going high or low as expected, and to see the PWM wave for the buzzer. For our other hardware requirement specifications we could tell if they were met by hearing the notes played, seeing the screen display, etc.
-
 
 6. Show off the remaining elements that will make your project whole: mechanical casework, supporting graphical user interface (GUI), web portal, etc.
 
@@ -225,7 +228,7 @@ We need to finish soldering all the parts to make the entire system more compact
 
 The riskiest part remaining of our project is moving all of our components onto gloves, because there is the risk that we will do something incorrectly and a part will stop working or not work as well.
 
-   1. How do you plan to de-risk this?
+1. How do you plan to de-risk this?
 
    We plan to de-risk this by testing our parts at every stage as we transfer them to the gloves, and being careful to have all the necessary and correct connections.
 
