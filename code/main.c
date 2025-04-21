@@ -59,6 +59,7 @@ volatile int drumming = 0;
 volatile int noting = 0;
 volatile int drum_count = 0;
 volatile int note_count = 0;
+volatile int hasDrummed = 0;
 
 void init_adc() {
    
@@ -259,20 +260,19 @@ ISR(TIMER1_OVF_vect) {
 
 }
 
-uint16_t bpm_calc() {
+uint16_t bpm_calc(uint16_t now) {
    
-    if (num_beats < 5) {
-        return -1;
+    if (num_beats < 2) {
+        return 0;
     }
    
     uint16_t total_ticks = 0;
     uint16_t time_diff;
-    uint16_t average_ticks;
-    float secs_per_beat;
 
     int prev_time = drum_times[0];
     int curr_time;
     for (int i = 1; i < 5; i++) {
+        if (drum_times[i] == 0) break;
         curr_time = drum_times[i];
         time_diff = curr_time - prev_time;
         total_ticks+=time_diff;
@@ -280,15 +280,26 @@ uint16_t bpm_calc() {
         prev_time = curr_time;
     }
 
-    average_ticks = total_ticks/4;
-    secs_per_beat = (float)(average_ticks)/15625.0;
+    time_diff = now - drum_times[drum_time_idx == 0 ? 4 : (drum_time_idx - 1)];
+    total_ticks += time_diff;
 
-    bpm = (uint16_t)(60.0/secs_per_beat);
+    int total_intervals = num_beats < 5 ? num_beats : 5;
+    float avg_ticks = (float)total_ticks / total_intervals;
+    float secs_per_beat = avg_ticks / 15625.0;
+    bpm = (uint16_t)(60.0 / secs_per_beat);
+
     return bpm;
    
 }
 
 void make_drum_sound() {
+    
+    // NEW
+//    last_played[0] = 1;
+    
+    if (!hasDrummed) {
+        hasDrummed=1;
+    }
     
     printf("making drum sound...\n");
         
@@ -313,7 +324,7 @@ void make_drum_sound() {
 
  void drum(int val) {
  
-    int adc_threshold = 500; // todo figure out value
+    int adc_threshold = 500;
     int drum_adc = val;
 
     if (drum_adc > adc_threshold) {
@@ -323,27 +334,30 @@ void make_drum_sound() {
         if (num_beats < 5) {
            
             if (abs(TCNT1 - drum_times[num_beats-1]) < 2000) {
-                return;
+                
             }
-           
-            drum_times[drum_time_idx] = TCNT1;
+            else {
+                drum_times[drum_time_idx] = TCNT1;
             
-            drum_time_idx = (drum_time_idx + 1) % 5;
+                drum_time_idx = (drum_time_idx + 1) % 5;
+            }
            
         } else {
            
            
             if (abs(TCNT1 - drum_times[4]) < 2000) {
-                return;
+                
             }
-           
-            // shift
-            for (int i = 0; i < 4; i++) {
-                drum_times[i] = drum_times[i+1];
+            else {
+                // shift
+                for (int i = 0; i < 4; i++) {
+                    drum_times[i] = drum_times[i+1];
+                }
+
+                drum_times[4] = TCNT1;
+                drum_time_idx = (drum_time_idx + 1) % 5;
             }
-           
-            drum_times[4] = TCNT1;
-            drum_time_idx = (drum_time_idx + 1) % 5;
+          
            
         }
        
@@ -378,7 +392,7 @@ void make_drum_sound() {
     switch(finger) {
         case 0: 
             if (num_beats >= 5) {
-                bpm_calc();
+                bpm_calc(TCNT1);
                 sprintf(buffer, "%d", bpm);
                 LCD_drawString(LCD_WIDTH/2 - 20, LCD_WIDTH/2, buffer, textColor, backgroundColor);
             }
@@ -428,8 +442,8 @@ void make_drum_sound() {
   * 
   */
  int main() {
-//    int imu_addr;
-//    I2C_init();
+    int imu_addr;
+    I2C_init();
      
     Initialize();
 //    uart_init();
@@ -442,58 +456,82 @@ void make_drum_sound() {
 //    repaint(1);
      
 //     
-//    imu_addr = read_register(WHO_AM_I);
-//    write_register(0x6B, 0x00); // Exit sleep mode
+    imu_addr = read_register(WHO_AM_I);
+    write_register(0x6B, 0x00); // Exit sleep mode
      
     while(1) {  
         
         printf("hi \n");
         
 
-        
         if (drumming) {
             drum_count++;
         }
         if (drum_count >= 2) {
-            drumming = 0;
+            drumming   = 0;
             drum_count = 0;
-            TCCR3A &= ~((1 << COM3A1) | (1 << COM3B1));
-            PORTD &= ~(1 << PD0); // Turn off PD0
-            DDRD |= (1 << PD2);
-            turn_notes_off();
+
+            TCCR3A = 0; 
+            TCCR3B = 0;     
+            TCNT3  = 0;
+            ICR3   = OCR3A = OCR3B = 0;
+
+            DDRD  |=  (1 << PD0);
+            PORTD |=  (1 << PD0); 
         }
         
-        if (noting) {
-            note_count++;
-        }
-        if (note_count >= 10000) {
+        //hasDrummed=0;
+
+        if (hasDrummed==0 && noting && ++note_count >= 100) {
             noting = 0;
-            note_count=0;
+            note_count = 0;
+            turn_notes_off();
+        }
+        
+        if (hasDrummed && noting && ++note_count >= 10) {
+            noting = 0;
+            note_count = 0;
             turn_notes_off();
         }
         
         
         
-//        int16_t z = (int16_t)(((uint16_t)read_register(ACCEL_ZOUT_H) << 8) | read_register(ACCEL_ZOUT_L));
-//        float h = ((float)(z + 16384) / (2 * 16384)) * 100.0;
-//        
-////        int h = 0;
-//        printf("Height: %d\n", h);
-//        
-//        if ((int) h < 50) {
-//            printf("Switching to low octave...");
-//            octave = 1;
-//        } else if ((int) h >= 50) {
-//            octave = 0;
-//            printf("Switching to high octave...");
-//        }
+        int16_t z = (int16_t)(((uint16_t)read_register(ACCEL_ZOUT_H) << 8) | read_register(ACCEL_ZOUT_L));
+        float h = ((float)(z + 16384) / (2 * 16384)) * 100.0;
+        
+   //     int h = 0;
+        printf("Height: %d\n", (int)h);
+        
+        if ((int) h < 50) {
+            printf("Switching to low octave...");
+            octave = 1;
+        } else if ((int) h >= 50) {
+            octave = 0;
+            printf("Switching to high octave...");
+        }
        
          for (int i = 0; i <= 5; i++) {
             int val = finger_adcs[i];
+            
+            // OLD
             if (i == 0) {
                 drum(val);
                 repaint(0);
             }
+            // OLD
+            
+            /* NEW
+            
+            if (i == 0 && !last_played[i]) {
+                drum(val);
+                repaint(0);
+                // last_played[0] = 1 is done in make_drum_sound
+            } else if (i == 0 && last_played  && val > 500) {
+                last_played[0] = 0;
+            }
+             
+             */
+            
             else if (val < 700 && !last_played[i]) {
                 printf("FINGER %d: %d\n", i, val);
                 repaint(i);
