@@ -48,15 +48,13 @@ volatile int finger_adcs[6] = {0, 0, 0, 0, 0, 0}; // drum is 0, fingers are 1-5
 volatile int curr_finger = 0;
 volatile uint16_t drum_times[5] = {0, 0, 0, 0, 0}; // most recent drum times
 volatile int drum_time_idx = 0;
-volatile int overflows;
-volatile uint16_t last_drum;
-volatile uint16_t curr_drum;
 volatile int bpm;
 volatile int num_beats;
 volatile int last_played[6] = {0};
 volatile float volume = 50;
 volatile int octave = 0; // 0 for higher octave (default), 1 for lower
 
+// Used to turn notes and drum off
 volatile int drumming = 0;
 volatile int noting = 0;
 volatile int drum_count = 0;
@@ -115,13 +113,8 @@ void drum_timer_init() {
     TCCR1B &= ~(1 << WGM12);
 
     TCNT1 = 0;
-    overflows = 0;
 
     TIMSK1 |= (1 << TOIE1); // enable overflow interrupt
-}
-
-ISR(TIMER1_OVF_vect) {
-    overflows++;
 }
 
 void Initialize() {
@@ -201,7 +194,7 @@ ISR(ADC_vect) {
     curr_finger = (curr_finger + 1) % 6;
     select_channel(curr_finger);
 
-    _delay_us(10);
+    _delay_us(15);
     ADCSRA |= (1 << ADSC); // Start next conversion
 }
 
@@ -211,46 +204,29 @@ void produce_sound(int finger) {
     if (finger == 1) {
         // Finger 1 will be C and the C file will be connected to T00 on the sound board
         PORTD &= ~(1 << C_PIN);
-        //        printf("Playing C!!\n");
-        //            _delay_ms(28000);
-        //            PORTD |= (1 << C_PIN);  
     } else if (finger == 2) {
-        //finger 2 will be D and the D file will be connected to T01 on the sound board which is connected to PD3
+        //finger 2 will be D and the D file will be connected to T01
         PORTD &= ~(1 << D_PIN);
-        //            _delay_ms(28000);
-        //        PORTD |= (1 << D_PIN);
     } else if (finger == 3) {
-        //finger 3 will be E and the E file will be connected to T02 on the sound board which is connected to PD4
+        //finger 3 will be E and the E file will be connected to T02
         if (octave == 0) { // Toggle higher octave
             PORTD &= ~(1 << E_PIN);
-            //            _delay_ms(28000);
-            //            PORTD |= (1 << E_PIN);
         } else if (octave == 1) {
             PORTD &= ~(1 << A_PIN);
-            //            _delay_ms(28000);
-            //            PORTD |= (1 << A_PIN);
         }
     } else if (finger == 4) {
-        //finger 4 will be F and the F file will be connected to T03 on the sound board which is connected to PD5
+        //finger 4 will be F and the F file will be connected to T03
         if (octave == 0) { // Toggle higher octave
             PORTD &= ~(1 << F_PIN);
-            //            _delay_ms(28000);
-            //            PORTD |= (1 << F_PIN);
         } else if (octave == 1) {
             PORTE &= ~(1 << B_PIN);
-            //            _delay_ms(28000);
-            //            PORTE |= (1 << B_PIN);
         }
     } else if (finger == 5) {
-        //finger 5 will be G and the G file will be connected to T04 on the sound board which is connected to PD7
+        //finger 5 will be G and the G file will be connected to T04
         if (octave == 0) { // Toggle higher octave
             PORTD &= ~(1 << G_PIN);
-            //            _delay_ms(28000);
-            //            PORTD |= (1 << G_PIN);
         } else if (octave == 1) {
             PORTE &= ~(1 << C_HI_PIN);
-            //            _delay_ms(28000);
-            //            PORTE |= (1 << C_HI_PIN);
         }
     } else {
         printf("Invalid finger number\n");
@@ -258,7 +234,7 @@ void produce_sound(int finger) {
 
 }
 
-uint16_t bpm_calc(uint16_t now) {
+uint16_t bpm_calc() {
 
     if (num_beats < 5) {
         return -1;
@@ -284,21 +260,19 @@ uint16_t bpm_calc(uint16_t now) {
 
     bpm = (uint16_t) (60.0 / secs_per_beat);
     
+//    printf("Last 5 drum times: %d\t%d\t%d\t%d\t BPM: %d", drum_times[0], drum_times[1], drum_times[2], drum_times[3], drum_times[4], bpm);
+    
     return bpm;
 
 }
 
 void make_drum_sound() {
 
-
-    // NEW
     last_played[0] = 1;
 
     if (!hasDrummed) {
         hasDrummed = 1;
     }
-
-    printf("making drum sound...\n");
 
     drumming = 1;
 
@@ -307,15 +281,12 @@ void make_drum_sound() {
     DDRD &= ~(1 << PD2);
 
     TCCR3A = (1 << COM3A1) | (1 << COM3B1) | (1 << WGM31);
-    //    TCCR3A = (1 << COM3A1) | (1 << WGM31);
     TCCR3B = (1 << WGM33) | (1 << CS30); // No prescaler
 
     ICR3 = 65535; // Max period
     OCR3A = ICR3 / 2; // 50% duty cycle
 
-
     repaint(0);
-
 
 }
 
@@ -325,8 +296,6 @@ void drum(int val) {
     int drum_adc = val;
 
     if (drum_adc > adc_threshold) {
-
-        //        printf("greater than threshold\n");
 
         if (num_beats < 5) {
 
@@ -344,6 +313,7 @@ void drum(int val) {
             if (abs(TCNT1 - drum_times[4]) < 2000) {
                 return;
             } else {
+                
                 // shift
                 for (int i = 0; i < 4; i++) {
                     drum_times[i] = drum_times[i + 1];
@@ -357,9 +327,7 @@ void drum(int val) {
         }
 
         num_beats++;
-
         make_drum_sound();
-
 
     }
 
@@ -387,12 +355,9 @@ void repaint(int finger) {
         case 0:
             if (num_beats >= 5) {
                 LCD_drawString(LCD_WIDTH / 2 - 20, LCD_WIDTH / 2, "     ", textColor, backgroundColor);
-                bpm_calc(TCNT1);
+                bpm_calc();
                 sprintf(buffer, "%d", bpm);
-                LCD_drawString(LCD_WIDTH / 2 - 20, LCD_WIDTH / 2, buffer, textColor, backgroundColor);
-                
-                printf("Last 5 drum times: %d\t%d\t%d\t%d\t BPM: %d", drum_times[0], drum_times[1], drum_times[2], drum_times[3], drum_times[4], bpm);
-                
+                LCD_drawString(LCD_WIDTH / 2 - 20, LCD_WIDTH / 2, buffer, textColor, backgroundColor);                
             }
             break;
         case 1:
@@ -441,37 +406,25 @@ void turn_notes_off() {
  */
 int main() {
     int imu_addr;
-    
-    printf("hi\n");
     I2C_init();
     
-    printf("after\n");
-
+    // enable pull-up resistors for I2C
     PORTC |= (1 << PC4);
     PORTC |= (1 << PC5);
 
     Initialize();
-    uart_init();
+//    uart_init();
     setPaintDisplay();
     
     _delay_ms(200);
 
-    printf("hello\n");
-
     int count = 0;
 
-    //    repaint(1);
-
-//    ////     
     imu_addr = read_register(WHO_AM_I);
     printf("read\n");
     write_register(0x6B, 0x00); // Exit sleep mode
-    printf("write\n");
-    //     
+    printf("write\n"); 
     while (1) {
-
-        //        printf("hi \n");
-
 
         if (drumming) {
             drum_count++;
@@ -489,9 +442,7 @@ int main() {
             PORTD |= (1 << PD2);
         }
 
-        //hasDrummed=0;
-
-        if (hasDrummed == 0 && noting && ++note_count >= 70) {
+        if (hasDrummed == 0 && noting && ++note_count >= 250) {
             noting = 0;
             note_count = 0;
             turn_notes_off();
@@ -504,19 +455,14 @@ int main() {
         }
 
 
-//
         int16_t z = (int16_t) (((uint16_t) read_register(ACCEL_ZOUT_H) << 8) | read_register(ACCEL_ZOUT_L));
         float h = ((float) (z + 16384) / (2 * 16384)) * 100.0;
         h = abs(h);
 
-                if (count % 10 == 0) printf("Height: %d\n", (int)h);
-
         if ((int) h < 30) {
-            //            printf("Switching to high octave...");
             octave = 1;
         } else if ((int) h >= 30) {
             octave = 0;
-            //            printf("Switching to low octave...");
         }
 
         count++;
@@ -524,38 +470,25 @@ int main() {
         for (int i = 0; i <= 5; i++) {
             int val = finger_adcs[i];
 
-            if (count % 10 == 0) {
-                printf("%d: %d\t", 1, finger_adcs[1]);
-                printf("%d: %d\t", 2, finger_adcs[2]);
-                printf("%d: %d\t", 3, finger_adcs[3]);
-                printf("%d: %d\t", 4, finger_adcs[4]);
-                printf("%d: %d\n", 5, finger_adcs[5]);
-//                printf("IMU: %d\n", h);
-            }
-
-
             if (i == 0 && !last_played[i]) {
                 drum(val);
-                //                repaint(0);
-                // last_played[0] = 1 is done in make_drum_sound
             } else if (i == 0 && last_played && val > 500) {
                 last_played[0] = 0;
             }
 
-
-            else if (((i == 1 && val > 60) | 
-//                     (i == 2 && val > 900) |
-                     (i == 3 && val > 80) |
-                     (i == 4 && val > 80) |
-                     (i == 5 && val > 35)) && !last_played[i]) {
+            else if (((i == 1 && val > 100) | 
+                     (i == 2 && val > 500) |
+                     (i == 3 && val > 500) |
+                     (i == 4 && val > 150) |
+                     (i == 5 && val > 500)) && !last_played[i]) {
                 repaint(i);
                 produce_sound(i);
                 last_played[i] = 1;
             } else if (i != 0) {
                 last_played[i] = 0;
             }
+            
         }
-
 
     }
     return (EXIT_SUCCESS);
