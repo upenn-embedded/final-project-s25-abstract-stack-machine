@@ -49,9 +49,13 @@ The final solution to our problem of creating a portable musical instrument simi
 
 *Validate at least two requirements, showing how you tested and your proof of work (videos, images, logic analyzer/oscilloscope captures, etc.).*
 
-| ID     | Description                                                                                               | Validation Outcome                                                                          |
-| ------ | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| SRS-01 | The IMU 3-axis acceleration will be measured with 16-bit depth every 100 milliseconds +/-10 milliseconds. | Confirmed, logged output from the MCU is saved to "validation" folder in GitHub repository. |
+| ID     | Description                                                                                                                                                                                                                                         | Validation Outcome                                                                                     |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| SRS-01 | The system shall get the current note being played and print the note out on the screen within 1s.                                                                                                                                                  | EXAMPLE:  Confirmed, logged output from the MCU is saved to "validation" folder in GitHub repository. |
+| SRS-02 | There shall be a separate input capture interrupt for each finger on the note-playing hand, so that each can output a note when that finger is pushed down.                                                                                         |                                                                                                        |
+| SRS-03 | A timer shall be used to generate a low PWM signal for the buzzer acting as the drum whenever the finger for the drum is down.                                                                                                                      |                                                                                                        |
+| SRS-04 | The system shall be able to distinguish from a slight twitch in a finger to actually playing the note using debouncing by only outputting a note if the finger was “down” for longer than a half a second.                                        |                                                                                                        |
+| SRS-05 | Voltage across each force resistor shall be analyzed at its own output pin, such that using ADC, we can convert a range of voltages to either on or off, signifying if a finger is fully bent.  If it is, the corresponding sound shall be produced |                                                                                                        |
 
 #### 3.2 Hardware Requirements Specification (HRS) Results
 
@@ -61,10 +65,14 @@ The final solution to our problem of creating a portable musical instrument simi
 
 *Validate at least two requirements, showing how you tested and your proof of work (videos, images, logic analyzer/oscilloscope captures, etc.).*
 
-| ID     | Description                                                                                                                        | Validation Outcome                                                                                                      |
-| ------ | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| HRS-01 | A distance sensor shall be used for obstacle detection. The sensor shall detect obstacles at a maximum distance of at least 10 cm. | Confirmed, sensed obstacles up to 15cm. Video in "validation" folder, shows tape measure and logged output to terminal. |
-|        |                                                                                                                                    |                                                                                                                         |
+| ID     | Description                                                                                                                                                                                     | Validation Outcome                                                                                                                 |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| HRS-01 | Five flex sensors shall be used, one on each finger of a glove, to detect finger bending for note generating. Each sensor shall detect a range of motion of at least 90 degrees.                | EXAMPLE:  Confirmed, sensed obstacles up to 15cm. Video in "validation" folder, shows tape measure and logged output to terminal. |
+| HRS-02 | One force-sensitive resistor shall be used to produce the drum beats and shall detect pressures in the range of 0.2 N to 10 N, only sounding a drum once if a finger is held down continuously. |                                                                                                                                    |
+| HRS-03 | An audio breakout board shall be used to generate a PWM signal for a speaker, which shall produce frequencies in the range of 250 Hz to 1000 Hz.                                                |                                                                                                                                    |
+| HRS-04 | A buzzer shall be used to create a drum beat. It shall produce sound using low-frequency PWM signals in the range of 30 Hz to 100 Hz.                                                           |                                                                                                                                    |
+| HRS-05 | An LCD screen shall be used to display the current note playing and the beats per minute of the current drum beat, based on the average time between the last four drum beats played.           |                                                                                                                                    |
+| HRS-06 | A gyroscope shall be used to change the volume of the music produced and shall detect a range of motion of at least 180 degrees.                                                                |                                                                                                                                    |
 
 ### 4. Conclusion
 
@@ -82,3 +90,11 @@ Reflect on your project. Some questions to address:
 ## References
 
 Fill in your references here as you work on your final project. Describe any libraries used here.
+
+LCD Library (Lab 4: Pong)
+
+I2C Library (written based on documentation)
+
+ADC Code (used initialization code from class repository)
+
+UART Library (only used for debugging/validation, from class repository)
