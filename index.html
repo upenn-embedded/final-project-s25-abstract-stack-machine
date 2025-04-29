@@ -59,27 +59,27 @@
             <tr>
               <td>SRS-01</td>
               <td>The system shall get the current note being played and print the note out on the screen within 1s.</td>
-              <td>Validated: The screen updates and the note plays well within 1s.</td>
+              <td>Validated: Video is in validation folder. The screen updates and the note plays well within 1s.</td>
             </tr>
             <tr>
               <td>SRS-02</td>
-              <td>Separate input capture interrupts for each finger to output a note.</td>
-              <td>Changed: Used ADC thresholds instead of input capture interrupts.</td>
+              <td>There shall be a separate input capture interrupt for each finger on the note-playing hand, so that each can output a note when that finger is pushed down.</td>
+              <td>Changed: We are not using input capture interrupts. However, we are outputting notes when each finger is put down.</td>
             </tr>
             <tr>
               <td>SRS-03</td>
-              <td>Use a timer to generate a low PWM signal for the buzzer (drum).</td>
-              <td>Validated: PWM wave at 122 Hz observed on oscilloscope.</td>
+              <td>A timer shall be used to generate a low PWM signal for the buzzer acting as the drum whenever the finger for the drum is down.</td>
+              <td>Validated: Vdeo is in validation folder. The PWM wave can be seen on the oscilloscope and the frequency is 122 Hz.</td>
             </tr>
             <tr>
               <td>SRS-04</td>
-              <td>Debounce based on finger "down" for 0.5 seconds.</td>
-              <td>Changed: Used ADC thresholds and stretch/re-bend detection instead of timing debounce.</td>
+              <td>The system shall be able to distinguish from a slight twitch in a finger to actually playing the note using debouncing by only outputting a note if the finger was “down” for longer than a half a second.</td>
+              <td>Changed: Rather than debouncing based on timing, we use a different ADC threshold for each finger. We also made sure that a given note does not play again until it is stretched out again and re-bent.</td>
             </tr>
             <tr>
               <td>SRS-05</td>
-              <td>Voltage across each force resistor analyzed to produce notes.</td>
-              <td>Confirmed: ADC range thresholds used to reliably detect notes.</td>
+              <td>Voltage across each force resistor shall be analyzed at its own output pin, such that using ADC, we can convert a range of voltages to either on or off, signifying if a finger is fully bent.  If it is, the corresponding sound shall be produced</td>
+              <td>Confirmed: This description matches how we are currently producing the notes in the software.</td>
             </tr>
           </tbody>
         </table>
@@ -98,33 +98,33 @@
           <tbody>
             <tr>
               <td>HRS-01</td>
-              <td>Five flex sensors detect finger bending for note generation (90° range).</td>
-              <td>Confirmed: Fully bending fingers triggers notes as shown in demo.</td>
+              <td>Five flex sensors shall be used, one on each finger of a glove, to detect finger bending for note generating. Each sensor shall detect a range of motion of at least 90 degrees.</td>
+              <td>Confirmed: We are able to bend our fingers fully and produce the notes. This can be seen in our main demo video.</td>
             </tr>
             <tr>
               <td>HRS-02</td>
-              <td>Force-sensitive resistor for drum beat detection (0.2N–10N).</td>
-              <td>Confirmed: Successfully detected different finger pressures.</td>
+              <td>One force-sensitive resistor shall be used to produce the drum beats and shall detect pressures in the range of 0.2 N to 10 N, only sounding a drum once if a finger is held down continuously.</td>
+              <td>Confirmed through testing--we ensured that we could detect the pressure from a range of finger taps of different strengths.</td>
             </tr>
             <tr>
               <td>HRS-03</td>
-              <td>Audio breakout board outputs sound (250–1000 Hz).</td>
-              <td>Validated: Frequencies fall within expected musical range.</td>
+              <td>An audio breakout board shall be used to generate a PWM signal for a speaker, which shall produce frequencies in the range of 250 Hz to 1000 Hz.</td>
+              <td>Validated: Video in validation folder. Middle C is about 261 Hz and high C is about 523 Hz, so our entire range of notes falls into the 250-1000 Hz range, and additionally, they are tuned properly.the range.</td>
             </tr>
             <tr>
               <td>HRS-04</td>
-              <td>Buzzer produces drum sound (30–100 Hz PWM).</td>
-              <td>Failed to Meet: Buzzer operated at 122 Hz; next time would select different buzzer.</td>
+              <td>A buzzer shall be used to create a drum beat. It shall produce sound using low-frequency PWM signals in the range of 30 Hz to 100 Hz.</td>
+              <td>Failed to meet: We were not able to make the buzzer audible at a frequency that low. If we did this project again, we might have used a different buzzer or another way of producing sound. However, our buzzer was at 122 Hz (shown in SRS-03 video) and so this was close to the upper end of our range.</td>
             </tr>
             <tr>
               <td>HRS-05</td>
-              <td>LCD displays current note and beats per minute (BPM).</td>
-              <td>Validated: Display correctly updates note and BPM (calculated from drum hits).</td>
+              <td>An LCD screen shall be used to display the current note playing and the beats per minute of the current drum beat, based on the average time between the last four drum beats played.</td>
+              <td>Validated: Videos in validation folder (HRS-05a and HRS-05b). Note that we are now using the last five drum beats played in our calculation. We can see that the BPM changes accordingly to around 60 BPM and 120 BPM.</td>
             </tr>
             <tr>
               <td>HRS-06</td>
-              <td>Gyroscope changes musical note range based on 180° motion.</td>
-              <td>Changed: Gyroscope used to switch note ranges rather than volume control.</td>
+              <td>A gyroscope shall be used to change the volume of the music produced and shall detect a range of motion of at least 180 degrees.</td>
+              <td>Changed: The gyroscope can detect this range of motion, as we must flip our hand 180 degrees to change the note range (this can be seen in the demo video). However, we are now using the gyroscope to extend the range of notes rather than the volume.</td>
             </tr>
           </tbody>
         </table>
@@ -133,10 +133,7 @@
 
     <section id="conclusion">
       <h2>Conclusion</h2>
-      <p>Throughout this project, our team gained hands-on experience debugging hardware and integrating multiple sensors on a real-time embedded platform. We are proud of our successful integration of the gyroscope, the responsive pressure sensor input for drum beats, and the reliable ADC-based note detection.</p>
-      <p>We learned how to manage multiple components (flex sensors, gyroscope, pressure sensor) effectively on a single microcontroller. If we were to redo the project, we would focus on stronger soldering and use a different buzzer design. Future improvements could include expanding the musical range and making the drum output sound more realistic using a dedicated soundboard.</p>
-    </section>
-
+      <p>We all learned a lot from this project, including how best to debug hardware both through print statements and probing.  We also learned how best to handle many different parts working together, especially since we had to figure out how to best handle 6 different ADC devices with only one ADC interrupt.  A couple of aspects of our project went well.  Firstly, the buzzer effectively works each time the pressure sensor is tapped, and the BPM calculation is consistently correct.  Furthermore, the screen does a good job of consistently displaying the BPM and the current note being played.  Lastly, having multiple ADC devices working at the same time was a concern, but that was always consistently working as well.  One accomplishment we are particularly proud of is getting the gyroscope to work.  It took a lot of debugging on our end, but it was really cool to see the gyroscope so effectively be able to switch the notes just be turning our hand over.  We never had to change our entire approach, but for the gyroscope, we did change what it did.  Previously, we said it would change the volume of the music.  However, the sound board we were using was not very effective at changing the volume of the audio noticeably enough so we ended up using the gyroscope to add a full scale of notes.  In the end, we actually preferred this approach because it allowed us to have a wider range of songs we can play on the instrument.  One major obstacle we encountered that we did not anticipate was that when we soldered, since everything was so delicate, the soldering was not quite enough to make the project work all of the time, so we had to do a lot of debugging with the connections to make it work completely.  This caused a lot of problems, and if we could go back we would instead spend more time soldering all of the connections strongly the first time so that we did not have to go back and fix so many of them later.  Another unanticipated obstacle that we encountered was that the buzzer was not working because we used Timer3 on the Atmega for the buzzer and we did not realize that UART also uses Timer3.  Because of this, we spent a lot of time debugging it since we were trying to use UART for debugging at the same time as playing the timer, but eventually we realized our mistake and stopped using UART while using the buzzer.  Some next steps for this project would be to secure the connections better through better soldering, make a wider range of notes with better usage of the gyroscope (perhaps it could change octaves completely), and change the buzzer so that it uses an additional sound board to sound more like a drum.</p>
     <section id="references">
       <h2>References</h2>
       <ul>
