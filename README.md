@@ -6,7 +6,7 @@
 * Team Name:  Abstract Stack Machine
 * Team Members:  Aarti Sabharwal, Sydney Fitzgerald, Maria-Christina Nicolaides
 * GitHub Repository URL: https://github.com/upenn-embedded/final-project-s25-abstract-stack-machine.git
-* GitHub Pages Website URL: [for final submission]
+* GitHub Pages Website URL: https://upenn-embedded.github.io/final-project-s25-abstract-stack-machine/
 
 ## Final Project Report
 

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Abstract Stack Machine | Final Project Report</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1>Abstract Stack Machine</h1>
+      <p class="subtitle">ESE 3500 Final Project | Spring 2025</p>
+      <nav>
+        <a href="#video">Video</a>
+        <a href="#images">Images</a>
+        <a href="#results">Results</a>
+        <a href="#conclusion">Conclusion</a>
+        <a href="#references">References</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="video">
+      <h2>Demo Video</h2>
+      <p><em>Watch the demonstration of the Abstract Stack Machine below:</em></p>
+      <!-- Replace src with your real video link 
+      <div class="video-wrapper">
+        <iframe src="YOUR_VIDEO_LINK_HERE" frameborder="0" allowfullscreen></iframe>
+      </div> -->
+    </section>
+
+    <section id="images">
+      <h2>Images of Final Product</h2>
+      <div class="gallery">
+        <img src="images/IMG_6696.jpeg" alt="">
+        <img src="images/IMG_6857.jpeg" alt="">
+        <img src="images/IMG_6860.jpeg" alt="">
+        <img src="images/IMG_6861.jpeg" alt="">
+        <img src="images/IMG_7819.jpeg" alt="">
+      </div>
+    </section>
+
+    <section id="results">
+      <h2>Results</h2>
+
+      <h3>Software Requirements Specification (SRS)</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Description</th>
+              <th>Validation Outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SRS-01</td>
+              <td>The system shall get the current note being played and print the note out on the screen within 1s.</td>
+              <td>Validated: The screen updates and the note plays well within 1s.</td>
+            </tr>
+            <tr>
+              <td>SRS-02</td>
+              <td>Separate input capture interrupts for each finger to output a note.</td>
+              <td>Changed: Used ADC thresholds instead of input capture interrupts.</td>
+            </tr>
+            <tr>
+              <td>SRS-03</td>
+              <td>Use a timer to generate a low PWM signal for the buzzer (drum).</td>
+              <td>Validated: PWM wave at 122 Hz observed on oscilloscope.</td>
+            </tr>
+            <tr>
+              <td>SRS-04</td>
+              <td>Debounce based on finger "down" for 0.5 seconds.</td>
+              <td>Changed: Used ADC thresholds and stretch/re-bend detection instead of timing debounce.</td>
+            </tr>
+            <tr>
+              <td>SRS-05</td>
+              <td>Voltage across each force resistor analyzed to produce notes.</td>
+              <td>Confirmed: ADC range thresholds used to reliably detect notes.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Hardware Requirements Specification (HRS)</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Description</th>
+              <th>Validation Outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>HRS-01</td>
+              <td>Five flex sensors detect finger bending for note generation (90° range).</td>
+              <td>Confirmed: Fully bending fingers triggers notes as shown in demo.</td>
+            </tr>
+            <tr>
+              <td>HRS-02</td>
+              <td>Force-sensitive resistor for drum beat detection (0.2N–10N).</td>
+              <td>Confirmed: Successfully detected different finger pressures.</td>
+            </tr>
+            <tr>
+              <td>HRS-03</td>
+              <td>Audio breakout board outputs sound (250–1000 Hz).</td>
+              <td>Validated: Frequencies fall within expected musical range.</td>
+            </tr>
+            <tr>
+              <td>HRS-04</td>
+              <td>Buzzer produces drum sound (30–100 Hz PWM).</td>
+              <td>Failed to Meet: Buzzer operated at 122 Hz; next time would select different buzzer.</td>
+            </tr>
+            <tr>
+              <td>HRS-05</td>
+              <td>LCD displays current note and beats per minute (BPM).</td>
+              <td>Validated: Display correctly updates note and BPM (calculated from drum hits).</td>
+            </tr>
+            <tr>
+              <td>HRS-06</td>
+              <td>Gyroscope changes musical note range based on 180° motion.</td>
+              <td>Changed: Gyroscope used to switch note ranges rather than volume control.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="conclusion">
+      <h2>Conclusion</h2>
+      <p>Throughout this project, our team gained hands-on experience debugging hardware and integrating multiple sensors on a real-time embedded platform. We are proud of our successful integration of the gyroscope, the responsive pressure sensor input for drum beats, and the reliable ADC-based note detection.</p>
+      <p>We learned how to manage multiple components (flex sensors, gyroscope, pressure sensor) effectively on a single microcontroller. If we were to redo the project, we would focus on stronger soldering and use a different buzzer design. Future improvements could include expanding the musical range and making the drum output sound more realistic using a dedicated soundboard.</p>
+    </section>
+
+    <section id="references">
+      <h2>References</h2>
+      <ul>
+        <li>LCD Library (Lab 4: Pong)</li>
+        <li>I2C Library (custom implementation based on documentation)</li>
+        <li>ADC Initialization Code (from class repository)</li>
+        <li>UART Library (for validation/debugging, from class repository)</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 Abstract Stack Machine Team | Aarti Sabharwal, Sydney Fitzgerald, Maria-Christina Nicolaides</p>
+  </footer>
+</body>
+</html>
