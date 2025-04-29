@@ -1,136 +1,134 @@
+/* style.css */
+
+/* -- Piano-note snowfall -- */
+.note-container {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; overflow: hidden; z-index: 10;
+}
+.note-container span {
+  position: absolute; top: -2rem;
+  font-size: 1.5rem; opacity: 0.8;
+  animation: fall 6s linear infinite;
+}
+.note-container span:nth-child(1)  { left: 10%; animation-delay: 0s; }
+.note-container span:nth-child(2)  { left: 30%; animation-delay: 1.2s; }
+.note-container span:nth-child(3)  { left: 50%; animation-delay: 2.4s; }
+.note-container span:nth-child(4)  { left: 70%; animation-delay: 3.6s; }
+.note-container span:nth-child(5)  { left: 20%; animation-delay: 4.8s; }
+.note-container span:nth-child(6)  { left: 40%; animation-delay: 1s; }
+.note-container span:nth-child(7)  { left: 60%; animation-delay: 2s; }
+.note-container span:nth-child(8)  { left: 80%; animation-delay: 3s; }
+
+@keyframes fall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+  100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
-    line-height: 1.6;
-  }
-  
-  .container {
-    width: 90%;
-    max-width: 1100px;
-    margin: auto;
-    padding: 2rem 0;
-  }
-  
-  .header {
-    background: #003366;
-    color: white;
-    padding: 2rem 0;
-    text-align: center;
-  }
-  
-  .header h1 {
-    margin-bottom: 0.5rem;
-    font-size: 2.5rem;
-  }
-  
-  .subtitle {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-  }
-  
-  nav a {
-    color: white;
-    text-decoration: none;
-    margin: 0 10px;
-    font-weight: bold;
-  }
-  
-  nav a:hover {
-    text-decoration: underline;
-  }
-  
-  main section {
-    margin-bottom: 3rem;
-  }
-  
-  h2 {
-    color: #003366;
-    margin-bottom: 1rem;
-  }
-  
-  .video-wrapper {
-    position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-  }
-  
-  .video-wrapper iframe {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .gallery {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: space-between;
-  }
-  
-  .gallery img {
-    flex: 1 1 30%;
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    object-fit: cover;
-  }
-  
-  
-  .table-wrapper {
-    overflow-x: auto;
-    margin-top: 1rem;
-    margin-bottom: 2rem;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  }
+  margin: 0; padding: 0; box-sizing: border-box;
+}
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f9f9f9; color: #333; line-height: 1.6;
+}
+.container {
+  width: 90%; max-width: 1100px; margin: auto; padding: 2rem 0;
+}
+.header {
+  background: #003366; color: white; padding: 2rem 0; text-align: center;
+}
+/* pulsing title */
+.header h1 {
+  font-size: 2.5rem; margin-bottom: 0.5rem;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { transform: scale(1); color: #fff; }
+  50%     { transform: scale(1.05); color: #ffd700; }
+}
+.subtitle {
+  font-size: 1.2rem; margin-bottom: 1rem;
+}
+nav a {
+  color: white; text-decoration: none; margin: 0 10px; font-weight: bold;
+  transition: transform 0.3s;
+}
+nav a:hover {
+  text-decoration: underline; transform: translateY(-3px);
+}
+main section {
+  margin-bottom: 3rem;
+}
+/* bouncing note before each section title */
+h2 {
+  color: #003366; margin-bottom: 1rem; display: inline-block;
+  position: relative;
+}
+h2::before {
+  content: "♪ ";
+  display: inline-block;
+  animation: bounce 1.2s infinite;
+}
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-8px); }
+}
 
-  table th:first-child,
-  table td:first-child {
-    white-space: nowrap;
-    width: 100px;
-  }
-  
-  table th, table td {
-    padding: 0.75rem;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    vertical-align: top;
-  }
-  
-  table th {
-    background-color: #003366;
-    color: white;
-    font-weight: bold;
-  }
-  
-  table tr:hover {
-    background-color: #f1f1f1;
-  }
-  
-  footer {
-    text-align: center;
-    padding: 2rem 0;
-    background: #eee;
-    font-size: 0.9rem;
-    margin-top: 2rem;
-  }
+.video-wrapper {
+  position: relative; padding-bottom: 56.25%; height: 0;
+}
+.video-wrapper iframe {
+  position: absolute; width: 100%; height: 100%;
+}
+.gallery {
+  display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between;
+}
+.gallery img {
+  flex: 1 1 30%; max-width: 100%; height: auto;
+  border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  object-fit: cover;
+}
+.table-wrapper {
+  overflow-x: auto; margin: 1rem 0 2rem;
+}
+table {
+  width: 100%; border-collapse: collapse;
+  background-color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+table th, table td {
+  padding: 0.75rem; text-align: left;
+  border-bottom: 1px solid #ddd; vertical-align: top;
+}
+table th {
+  background-color: #003366; color: white; font-weight: bold;
+}
+table tr:hover {
+  background-color: #f1f1f1;
+}
+footer {
+  text-align: center; padding: 2rem 0;
+  background: #eee; font-size: 0.9rem; margin-top: 2rem;
+}
 
-  #references {
-    margin-top: 3rem;
-    padding-top: 0;
-  }
-  
+/* -- Play-along keyboard -- */
+#keyboard { text-align: center; }
+.keyboard {
+  display: inline-flex; align-items: flex-end;
+  margin: 1rem 0 3rem;
+}
+.white-key {
+  width: 28px; height: 120px;
+  background: #fff; border: 1px solid #444;
+  margin: 0 2px; position: relative;
+  animation: keyPress 2s infinite;
+  transform-origin: bottom;
+}
+.white-key:nth-child(3n+1) { animation-delay: 0s; }
+.white-key:nth-child(3n+2) { animation-delay: 0.4s; }
+.white-key:nth-child(3n)   { animation-delay: 0.8s; }
+
+@keyframes keyPress {
+  0%, 70%, 100% { background: #fff; transform: scaleY(1); }
+  75%, 85%     { background: #ffd700; transform: scaleY(0.9); }
+}

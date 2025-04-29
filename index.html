@@ -7,6 +7,12 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Falling notes animation -->
+  <div class="note-container">
+    <span>♪</span><span>♫</span><span>♩</span><span>♬</span>
+    <span>♪</span><span>♫</span><span>♩</span><span>♬</span>
+  </div>
+
   <header class="header">
     <div class="container">
       <h1>Phantom Piano Hands</h1>
@@ -22,13 +28,15 @@
   </header>
 
   <main class="container">
+
     <section id="video">
       <h2>Demo Video</h2>
       <p><em>Watch the demonstration of the Abstract Stack Machine below:</em></p>
-      <!-- Replace src with your real video link 
+      <!--
       <div class="video-wrapper">
         <iframe src="YOUR_VIDEO_LINK_HERE" frameborder="0" allowfullscreen></iframe>
-      </div> -->
+      </div>
+      -->
     </section>
 
     <section id="images">
@@ -69,7 +77,7 @@
             <tr>
               <td>SRS-03</td>
               <td>A timer shall be used to generate a low PWM signal for the buzzer acting as the drum whenever the finger for the drum is down.</td>
-              <td>Validated: Vdeo is in validation folder. The PWM wave can be seen on the oscilloscope and the frequency is 122 Hz.</td>
+              <td>Validated: Video is in validation folder. The PWM wave can be seen on the oscilloscope and the frequency is 122 Hz.</td>
             </tr>
             <tr>
               <td>SRS-04</td>
@@ -78,7 +86,7 @@
             </tr>
             <tr>
               <td>SRS-05</td>
-              <td>Voltage across each force resistor shall be analyzed at its own output pin, such that using ADC, we can convert a range of voltages to either on or off, signifying if a finger is fully bent.  If it is, the corresponding sound shall be produced</td>
+              <td>Voltage across each force resistor shall be analyzed at its own output pin, such that using ADC, we can convert a range of voltages to either on or off, signifying if a finger is fully bent. If it is, the corresponding sound shall be produced.</td>
               <td>Confirmed: This description matches how we are currently producing the notes in the software.</td>
             </tr>
           </tbody>
@@ -104,12 +112,12 @@
             <tr>
               <td>HRS-02</td>
               <td>One force-sensitive resistor shall be used to produce the drum beats and shall detect pressures in the range of 0.2 N to 10 N, only sounding a drum once if a finger is held down continuously.</td>
-              <td>Confirmed through testing--we ensured that we could detect the pressure from a range of finger taps of different strengths.</td>
+              <td>Confirmed through testing—we ensured that we could detect the pressure from a range of finger taps of different strengths.</td>
             </tr>
             <tr>
               <td>HRS-03</td>
               <td>An audio breakout board shall be used to generate a PWM signal for a speaker, which shall produce frequencies in the range of 250 Hz to 1000 Hz.</td>
-              <td>Validated: Video in validation folder. Middle C is about 261 Hz and high C is about 523 Hz, so our entire range of notes falls into the 250-1000 Hz range, and additionally, they are tuned properly.the range.</td>
+              <td>Validated: Video in validation folder. Middle C is about 261 Hz and high C is about 523 Hz, so our entire range of notes falls into the 250–1000 Hz range, and additionally, they are tuned properly.</td>
             </tr>
             <tr>
               <td>HRS-04</td>
@@ -124,7 +132,7 @@
             <tr>
               <td>HRS-06</td>
               <td>A gyroscope shall be used to change the volume of the music produced and shall detect a range of motion of at least 180 degrees.</td>
-              <td>Changed: The gyroscope can detect this range of motion, as we must flip our hand 180 degrees to change the note range (this can be seen in the demo video). However, we are now using the gyroscope to extend the range of notes rather than the volume.</td>
+              <td>Changed: The gyroscope can detect this range of motion, as we must flip our hand 180 degrees to change the note range (this can be seen in the demo video). However, we are now using the gyroscope to extend the range of notes rather than the volume.</td>
             </tr>
           </tbody>
         </table>
@@ -133,7 +141,23 @@
 
     <section id="conclusion">
       <h2>Conclusion</h2>
-      <p>We all learned a lot from this project, including how best to debug hardware both through print statements and probing.  We also learned how best to handle many different parts working together, especially since we had to figure out how to best handle 6 different ADC devices with only one ADC interrupt.  A couple of aspects of our project went well.  Firstly, the buzzer effectively works each time the pressure sensor is tapped, and the BPM calculation is consistently correct.  Furthermore, the screen does a good job of consistently displaying the BPM and the current note being played.  Lastly, having multiple ADC devices working at the same time was a concern, but that was always consistently working as well.  One accomplishment we are particularly proud of is getting the gyroscope to work.  It took a lot of debugging on our end, but it was really cool to see the gyroscope so effectively be able to switch the notes just be turning our hand over.  We never had to change our entire approach, but for the gyroscope, we did change what it did.  Previously, we said it would change the volume of the music.  However, the sound board we were using was not very effective at changing the volume of the audio noticeably enough so we ended up using the gyroscope to add a full scale of notes.  In the end, we actually preferred this approach because it allowed us to have a wider range of songs we can play on the instrument.  One major obstacle we encountered that we did not anticipate was that when we soldered, since everything was so delicate, the soldering was not quite enough to make the project work all of the time, so we had to do a lot of debugging with the connections to make it work completely.  This caused a lot of problems, and if we could go back we would instead spend more time soldering all of the connections strongly the first time so that we did not have to go back and fix so many of them later.  Another unanticipated obstacle that we encountered was that the buzzer was not working because we used Timer3 on the Atmega for the buzzer and we did not realize that UART also uses Timer3.  Because of this, we spent a lot of time debugging it since we were trying to use UART for debugging at the same time as playing the timer, but eventually we realized our mistake and stopped using UART while using the buzzer.  Some next steps for this project would be to secure the connections better through better soldering, make a wider range of notes with better usage of the gyroscope (perhaps it could change octaves completely), and change the buzzer so that it uses an additional sound board to sound more like a drum.</p>
+      <p>We all learned a lot from this project, including how best to debug hardware both through print statements and probing. We also learned how best to handle many different parts working together, especially since we had to figure out how to best handle 6 different ADC devices with only one ADC interrupt. A couple of aspects of our project went well. Firstly, the buzzer effectively works each time the pressure sensor is tapped, and the BPM calculation is consistently correct. Furthermore, the screen does a good job of consistently displaying the BPM and the current note being played. Lastly, having multiple ADC devices working at the same time was a concern, but that was always consistently working as well. One accomplishment we are particularly proud of is getting the gyroscope to work. It took a lot of debugging on our end, but it was really cool to see the gyroscope so effectively be able to switch the notes just by turning our hand over. We never had to change our entire approach, but for the gyroscope, we did change what it did. Previously, we said it would change the volume of the music. However, the sound board we were using was not very effective at changing the volume of the audio noticeably enough so we ended up using the gyroscope to add a full scale of notes. In the end, we actually preferred this approach because it allowed us to have a wider range of songs we can play on the instrument.</p>
+      <p>One major obstacle we encountered that we did not anticipate was that when we soldered, since everything was so delicate, the soldering was not quite enough to make the project work all of the time, so we had to do a lot of debugging with the connections to make it work completely. This caused a lot of problems, and if we could go back we would instead spend more time soldering all of the connections strongly the first time so that we did not have to go back and fix so many of them later. Another unanticipated obstacle that we encountered was that the buzzer was not working because we used Timer3 on the Atmega for the buzzer and we did not realize that UART also uses Timer3. Because of this, we spent a lot of time debugging it since we were trying to use UART for debugging at the same time as playing the timer, but eventually we realized our mistake and stopped using UART while using the buzzer. Some next steps for this project would be to secure the connections better through better soldering, make a wider range of notes with better usage of the gyroscope (perhaps it could change octaves completely), and change the buzzer so that it uses an additional sound board to sound more like a drum.</p>
+    </section>
+
+    <section id="keyboard">
+      <h2>Play Along</h2>
+      <div class="keyboard">
+        <div class="white-key"></div><div class="white-key"></div>
+        <div class="white-key"></div><div class="white-key"></div>
+        <div class="white-key"></div><div class="white-key"></div>
+        <div class="white-key"></div><div class="white-key"></div>
+        <div class="white-key"></div><div class="white-key"></div>
+        <div class="white-key"></div><div class="white-key"></div>
+        <div class="white-key"></div><div class="white-key"></div>
+      </div>
+    </section>
+
     <section id="references">
       <h2>References</h2>
       <ul>
@@ -143,6 +167,7 @@
         <li>UART Library (for validation/debugging, from class repository)</li>
       </ul>
     </section>
+
   </main>
 
   <footer class="footer">
