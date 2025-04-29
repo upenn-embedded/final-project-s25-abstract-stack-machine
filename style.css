@@ -97,6 +97,12 @@
     background-color: white;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   }
+
+  table th:first-child,
+  table td:first-child {
+    white-space: nowrap;
+    width: 100px;
+  }
   
   table th, table td {
     padding: 0.75rem;
@@ -121,5 +127,11 @@
     background: #eee;
     font-size: 0.9rem;
     margin-top: 2rem;
+  }
+
+  #references {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #ccc;
   }
   
