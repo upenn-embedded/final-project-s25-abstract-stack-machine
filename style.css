@@ -67,7 +67,10 @@ h2 {
 }
 h2::before {
   content: "♪ ";
-  display: inline-block;
+  display: block;
+  color: #003366;
+  margin-bottom: 1rem;
+  position: relative;
   animation: bounce 1.2s infinite;
 }
 @keyframes bounce {
@@ -113,10 +116,11 @@ footer {
 
 /* -- Play-along keyboard -- */
 #keyboard { text-align: center; }
-.keyboard {
-  display: inline-flex; align-items: flex-end;
-  margin: 1rem 0 3rem;
-}
+ .keyboard {
+      display: flex;
+      align-items: flex-end;
+      margin: 1rem 0 3rem;
+  }
 .white-key {
   width: 28px; height: 120px;
   background: #fff; border: 1px solid #444;
