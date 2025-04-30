@@ -60,17 +60,18 @@ nav a:hover {
 main section {
   margin-bottom: 3rem;
 }
-/* bouncing note before each section title */
+
+
 h2 {
-  color: #003366; margin-bottom: 1rem; display: inline-block;
-  position: relative;
-}
-h2::before {
-  content: "♪ ";
-  display: block;
+  display: block;             
   color: #003366;
-  margin-bottom: 1rem;
-  position: relative;
+  margin: 2rem 0 1rem;    
+}
+
+h2::before {
+  content: "♪ ";            
+  display: inline;          
+  vertical-align: middle;  
   animation: bounce 1.2s infinite;
 }
 @keyframes bounce {
@@ -114,13 +115,17 @@ footer {
   background: #eee; font-size: 0.9rem; margin-top: 2rem;
 }
 
-/* -- Play-along keyboard -- */
-#keyboard { text-align: center; }
- .keyboard {
-      display: flex;
-      align-items: flex-end;
-      margin: 1rem 0 3rem;
-  }
+#keyboard h2 {
+  text-align: left;      
+}
+
+
+.keyboard {
+  display: flex;    
+  justify-content: flex-start;
+  margin: 1rem 0 3rem; 
+}
+
 .white-key {
   width: 28px; height: 120px;
   background: #fff; border: 1px solid #444;
