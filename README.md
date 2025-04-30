@@ -14,7 +14,7 @@ See linked website for full final product!
 
 ### 1. Video
 
-![Video](https://www.youtube.com/watch?v=cX5P7uVT91A)
+[Video](https://www.youtube.com/watch?v=cX5P7uVT91A)
 
 ### 2. Images
 
