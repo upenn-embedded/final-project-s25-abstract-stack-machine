@@ -10,18 +10,14 @@
 
 ## Final Project Report
 
+See linked website for full final product! 
+
 ### 1. Video
 
-[Insert final project video here]
-
-* The video must demonstrate your key functionality.
-* The video must be 5 minutes or less.
-* Ensure your video link is accessible to the teaching team. Unlisted YouTube videos or Google Drive uploads with SEAS account access work well.
-* Points will be removed if the audio quality is poor - say, if you filmed your video in a noisy electrical engineering lab.
+[Video](https://www.youtube.com/watch?v=cX5P7uVT91A)
 
 ### 2. Images
 
-[Insert final project images here]
 
 ![Alt text](images/IMG_7819.jpeg)
 
